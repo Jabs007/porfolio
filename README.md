@@ -1,16 +1,63 @@
-# React + Vite
+# PORTFOLIO2
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+A modern, dark glassmorphism-themed portfolio built with React, Vite, and GSAP.
 
-Currently, two official plugins are available:
+## Overview
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+PORTFOLIO2 is a visually striking personal portfolio featuring dark glassmorphism aesthetics with cyan/teal accent (#6ee7b7) on a dark backdrop. The design emphasizes depth, blur effects, and interactive elements that respond to user input and motion preferences.
 
-## React Compiler
+## Features
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- **Dark Glassmorphism Theme** — Frosted glass effects with cyan/teal accent (#6ee7b7) on a dark backdrop
+- **Six Interactive Sections** — About, Projects, Tech Stack, Experience, Contact, and Footer
+- **Lenis Smooth Scrolling** — Natural, momentum-based scrolling via the useLenis hook
+- **GSAP Animations** — Portal effects, orbital animations, and scroll-triggered interactions
+- **Reduced Motion Support** — Fully respects the prefers-reduced-motion media query
+- **Custom Cursor** — Follow-based cursor with hover states
+- **GitHub Stats Integration** — Displays repository metrics with animated counters
+- **Marquee Scroll** — Horizontal scrolling marquee for section navigation
 
-## Expanding the Oxlint configuration
+## Tech Stack
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and Oxlint's TypeScript related rules in your project.
+- React 18 + Vite 6
+- GSAP (GreenSock Animation Platform) for animations
+- Lenis for smooth scrolling
+- React IntersectionObserver for scroll animations
+- CSS custom properties for theming
+
+## Project Structure
+
+```
+src/
+ components/         # reusable UI components
+  ├─ About.jsx        # About section with orbs
+  ├─ Projects.jsx     # Projects grid with hover effects
+  ├─ TechStack.jsx    # Technology showcase with SVG glyphs
+  ├─ Experience.jsx   # Timeline-style experience
+  ├─ Contact.jsx      # Contact form and info
+  ├─ Footer.jsx       # Footer links
+  └─ ...
+ hooks/              # custom React hooks
+  ├─ useLenis.js      # smooth scrolling manager
+  ├─ useScrollReveals.js  # IntersectionObserver animations
+  ├─ usePageTitle.js  # document title management
+  ├─ useCinematicScroll.js  # cinematic scroll effects
+  └─ useFocusTrap.js  # focus trapping for modals
+ data/               # static data sources
+  └─ content.js       # project metadata and timeline
+ index.css           # global styles with glassmorphism base
+```
+
+## Build & Development
+
+```bash
+npm install
+npm run dev      # start development server
+npm run build    # build for production
+```
+
+Build targets modern browsers with Vite and outputs optimized static assets.
+
+## License
+
+This project is open source. See the repository for licensing details.
