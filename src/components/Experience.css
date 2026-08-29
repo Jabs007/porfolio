@@ -1,0 +1,232 @@
+.experience-section {
+  padding: 100px 0 80px;
+  width: 100%;
+  position: relative;
+}
+
+.timeline {
+  position: relative;
+  padding-left: 40px;
+}
+
+/* PROJECTS -> EXPERIENCE connector: a horizontal rule that draws in and
+   hands off to the vertical timeline line. */
+.timeline-into {
+  position: relative;
+  width: min(180px, 30vw);
+  height: 1px;
+  margin: 0 0 14px 7px;
+  background: linear-gradient(90deg, transparent, rgba(139, 90, 43, 0.4), transparent);
+  transform-origin: left;
+  transform: scaleX(0);
+  will-change: transform;
+}
+
+.timeline-line {
+  position: absolute;
+  left: 7px;
+  top: 10px;
+  bottom: 10px;
+  width: 1px;
+  background: linear-gradient(
+    180deg,
+    rgba(139, 90, 43, 0.3),
+    rgba(255, 248, 240, 0.1)
+  );
+  transform-origin: top;
+  transform: scaleY(0);
+  will-change: transform;
+}
+
+.timeline-item {
+  position: relative;
+  margin-bottom: 60px;
+}
+
+.timeline-dot {
+  position: absolute;
+  left: -39px;
+  top: 6px;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--accentColor);
+  box-shadow: 0 0 12px rgba(194, 164, 255, 0.5);
+}
+
+.timeline-dot--education {
+  background: #fff;
+  box-shadow: 0 0 12px rgba(255, 255, 255, 0.3);
+}
+
+.experience-head {
+  margin-bottom: 48px;
+}
+
+.experience-heading {
+  font-family: var(--font-display);
+  font-size: clamp(38px, 5vw, 68px);
+  font-weight: 700;
+  line-height: 1.05;
+  letter-spacing: -0.035em;
+  color: var(--textColor);
+  text-transform: uppercase;
+  margin-top: 8px;
+  cursor: default;
+}
+
+.experience-accent {
+  background: linear-gradient(
+    115deg,
+    #8b5a2b 0%,
+    #c8872a 35%,
+    #f5d398 52%,
+    #8b5a2b 75%,
+    #523112 100%
+  );
+  background-size: 240% 100%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  transition: background-position 0.6s cubic-bezier(0.16, 1, 0.3, 1), filter 0.35s ease;
+}
+
+.experience-head:hover .experience-accent {
+  background-position: 100% 0%;
+  filter: drop-shadow(0 4px 18px rgba(200, 135, 42, 0.4));
+}
+
+.timeline-content {
+  border-left: 1px solid rgba(139, 90, 43, 0.15);
+  padding-left: 32px;
+}
+
+.timeline-header {
+  display: flex;
+  align-items: baseline;
+  gap: 16px;
+  margin-bottom: 6px;
+  flex-wrap: wrap;
+}
+
+.timeline-header h3 {
+  font-family: var(--font-display);
+  font-size: clamp(20px, 2.2vw, 26px);
+  font-weight: 700;
+  color: var(--textColor);
+  letter-spacing: -0.02em;
+  margin: 0;
+}
+
+.timeline-period {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  color: var(--accentColor);
+  text-transform: uppercase;
+  opacity: 0.9;
+}
+
+.timeline-company {
+  font-family: var(--font-sans);
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--textColor);
+  opacity: 0.75;
+  margin: 0 0 16px;
+}
+
+.timeline-details {
+  margin: 0;
+  padding-left: 18px;
+  list-style: none;
+}
+
+.timeline-details li {
+  font-size: 16px;
+  line-height: 1.7;
+  color: var(--textColor);
+  opacity: 0.85;
+  margin-bottom: 8px;
+  position: relative;
+}
+
+.timeline-details li::before {
+  content: '';
+  position: absolute;
+  left: -16px;
+  top: 10px;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accentColor);
+  opacity: 0.6;
+}
+
+@media (max-width: 600px) {
+  .timeline {
+    padding-left: 24px;
+  }
+  .timeline-dot {
+    left: -23px;
+  }
+  .timeline-content {
+    padding-left: 16px;
+  }
+  .timeline-header {
+    flex-direction: column;
+    gap: 4px;
+  }
+}
+
+/* Ambient floating orbs - drift + mouse parallax (GSAP) */
+.experience-orbs {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.experience-orb {
+  position: absolute;
+  width: 460px;
+  height: 460px;
+  will-change: transform;
+}
+
+.experience-orb--1 {
+  top: -100px;
+  left: -120px;
+}
+
+.experience-orb--2 {
+  top: 30%;
+  right: -180px;
+}
+
+.experience-orb--3 {
+  bottom: -140px;
+  left: 20%;
+}
+
+.experience-orb-core {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    color-mix(in srgb, var(--accentColor) 14%, transparent),
+    transparent 68%
+  );
+  filter: blur(48px);
+  will-change: transform, opacity;
+}
+
+.experience-orb--2 .experience-orb-core {
+  background: radial-gradient(circle, rgba(139, 90, 43, 0.11), transparent 68%);
+}
+
+.experience-orb--3 .experience-orb-core {
+  background: radial-gradient(circle, rgba(105, 73, 40, 0.1), transparent 68%);
+}

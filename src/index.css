@@ -1,0 +1,423 @@
+/* Fonts load from Google Fonts in index.html (preconnected). */
+
+:root {
+  /* Type system - single source of truth for every family on the site.
+     --font-display  Syne: sculptural, bold, ultra-wide display font
+     --font-sans     Plus Jakarta Sans: modern, open geometric-humanist sans
+     --font-accent   Space Grotesk: technical accents, numerals, category tags
+     --font-mono     JetBrains Mono: technical badges, code & timestamps */
+  --font-display: 'Syne', system-ui, -apple-system, sans-serif;
+  --font-sans: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+  --font-accent: 'Space Grotesk', system-ui, -apple-system, sans-serif;
+  --font-mono: 'JetBrains Mono', 'Fira Code', ui-monospace, monospace;
+  --accentColor: #8b5a2b;
+  --backgroundColor: #fff8f0;
+  --textColor: #242220;
+  --vh: 100vh;
+  --vh: 100svh;
+  font-family: var(--font-sans);
+  font-size: 17px;
+  font-optical-sizing: auto;
+  font-style: normal;
+  line-height: 1.65;
+  /* scroll-behavior: smooth  removed; Lenis owns scroll easing */
+  color-scheme: light;
+  color: var(--textColor);
+  background-color: var(--backgroundColor);
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  user-select: none;
+  --cWidth: calc(100% - 30px);
+  --cMaxWidth: 1920px;
+}
+
+[data-theme='dark'] {
+  --accentColor: #e2a850;
+  --backgroundColor: #0c0a09;
+  --textColor: #f3f1ee;
+  --textColorSecondary: #a8a29e;
+  --glass-bg: rgba(18, 14, 11, 0.6);
+  --glass-accent: #e2a850;
+  --glass-orbit-color: #9c6c28;
+  color-scheme: dark;
+}
+
+/* transitions-dev - universal install block (paste once).
+   Every transition snippet reads from these semantic names. */
+:root {
+  /* Card resize */
+  --resize-dur: 300ms;
+  --resize-ease: cubic-bezier(0.22, 1, 0.36, 1);
+  /* Number pop-in */
+  --digit-dur: 500ms;
+  --digit-distance: 8px;
+  --digit-stagger: 70ms;
+  --digit-blur: 2px;
+  --digit-ease: cubic-bezier(0.34, 1.45, 0.64, 1);
+  --digit-dir-x: 0;
+  --digit-dir-y: 1;
+  /* Notification badge */
+  --badge-slide-dur: 260ms;
+  --badge-pop-dur: 500ms;
+  --badge-pop-close-dur: 180ms;
+  --badge-fade-dur: 400ms;
+  --badge-fade-close-dur: 180ms;
+  --badge-blur: 2px;
+  --badge-offset-x: -8.2px;
+  --badge-offset-y: 12.4px;
+  --badge-slide-ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --badge-pop-ease: cubic-bezier(0.34, 1.36, 0.64, 1);
+  --badge-close-ease: cubic-bezier(0.4, 0, 0.2, 1);
+  /* Text states swap */
+  --text-swap-dur: 200ms;
+  --text-swap-translate-y: 8px;
+  --text-swap-blur: 2px;
+  --text-swap-ease: ease-out;
+  /* Menu dropdown */
+  --dropdown-open-dur: 250ms;
+  --dropdown-close-dur: 150ms;
+  --dropdown-pre-scale: 0.97;
+  --dropdown-closing-scale: 0.99;
+  --dropdown-ease: cubic-bezier(0.22, 1, 0.36, 1);
+  /* Modal open / close */
+  --modal-open-dur: 250ms;
+  --modal-close-dur: 150ms;
+  --modal-scale: 0.96;
+  --modal-scale-close: 0.96;
+  --modal-ease: cubic-bezier(0.22, 1, 0.36, 1);
+  /* Panel reveal */
+  --panel-open-dur: 400ms;
+  --panel-close-dur: 350ms;
+  --panel-translate-y: 100px;
+  --panel-blur: 2px;
+  --panel-ease: cubic-bezier(0.22, 1, 0.36, 1);
+  /* Page side-by-side */
+  --page-slide-dur: 200ms;
+  --page-fade-dur: 200ms;
+  --page-slide-distance: 8px;
+  --page-blur: 3px;
+  --page-stagger: 0ms;
+  --page-exit-enabled: 1;
+  --page-slide-ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --page-fade-ease: cubic-bezier(0.22, 1, 0.36, 1);
+  /* Icon swap */
+  --icon-swap-dur: 200ms;
+  --icon-swap-blur: 2px;
+  --icon-swap-start-scale: 0.25;
+  --icon-swap-ease: ease-in-out;
+  /* Success check */
+  --check-opacity-dur: 550ms;
+  --check-rotate-dur: 550ms;
+  --check-rotate-from: 80deg;
+  --check-bob-dur: 450ms;
+  --check-y-amount: 40px;
+  --check-blur-dur: 500ms;
+  --check-blur-from: 10px;
+  --check-path-dur: 550ms;
+  --check-path-delay: 80ms;
+  --check-ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --check-ease-opacity: cubic-bezier(0.22, 1, 0.36, 1);
+  --check-ease-rotate: cubic-bezier(0.22, 1, 0.36, 1);
+  --check-ease-bob: cubic-bezier(0.34, 1.35, 0.64, 1);
+  --check-ease-path: cubic-bezier(0.22, 1, 0.36, 1);
+
+  /* glassmorphism */
+  --glass-bg: rgba(255, 248, 240, 0.5);
+  --glass-blur: 20px;
+  --glass-accent: var(--accentColor);
+  --glass-orbs: rgba(139, 90, 43, 0.1), rgba(139, 90, 43, 0.08), rgba(139, 90, 43, 0.05);
+  --glass-orbit-color: #8b5a2b;
+
+  /* Avatar group hover */
+  --avatar-lift: -4px;
+  --avatar-dur: 320ms;
+  --avatar-scale: 1.05;
+  --avatar-falloff: 0.45;
+  --avatar-ease-in: cubic-bezier(0.22, 1, 0.36, 1);
+  --avatar-ease-out: cubic-bezier(0.34, 3.85, 0.64, 1);
+  /* Error state shake */
+  --shake-distance: 6px;
+  --shake-overshoot: 4px;
+  --shake-dur-a: 80ms;
+  --shake-dur-b: 60ms;
+  --shake-ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --revert-hold: 3000ms;
+  --revert-dur: 280ms;
+}
+
+/* design-motion-principles - easing & duration tokens.
+   Emil Kowalski: custom curves over built-in `ease` (easing is the most
+   important part of any animation). Jakub Krehel: 200-500ms polish band.
+   --ease-in-out     state changes while visible (hover, focus)
+   --ease-out-strong arrivals, lifts (hover float, reveals)
+   --ease-out-expo   fast, decisive arrivals (reserved for hero-scale entrances) */
+:root {
+  --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-out-strong: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --dur-micro: 150ms;
+  --dur-fast: 220ms;
+  --dur-med: 300ms;
+  --dur-slow: 500ms;
+}
+
+@media screen and (min-width: 768px) {
+  body {
+    --cWidth: 94%;
+  }
+}
+
+* {
+  margin: 0;
+}
+
+/* ── Lenis smooth scroll (scroll-craft pattern) ──────────────────────────
+   Lenis owns scrolling. We disable every native smooth-scroll API that
+   would fight it, then let Lenis's own RAF drive position.           */
+
+/* Allow Lenis to measure natural document height. */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+
+/* Lenis runs its own easing; CSS scroll-behavior would double-ease. */
+html.lenis {
+  scroll-behavior: auto !important;
+}
+
+/* Prevent iframes from stealing pointer events during momentum phase. */
+html.lenis-ready .lenis-scrolling iframe {
+  pointer-events: none;
+}
+
+/* Section-entry momentum feel:
+   As the user crosses a section boundary the section scales ever-so-
+   slightly forward (0.998 → 1) driven by --vel. Combined with Lenis's
+   lerp, this creates the "sling-ring portal warp" sensation between
+   sections. Driven purely by CSS so it costs zero JS. */
+main > section {
+  transform: scale(calc(1 - var(--vel, 0) * 0.004));
+  transition: transform 0.1s linear;
+  will-change: transform;
+}
+
+/* Disable on mobile where the effect would look jittery. */
+@media (max-width: 767px) {
+  main > section {
+    transform: none;
+    transition: none;
+  }
+}
+
+
+body {
+  overflow-x: hidden;
+  margin: 0;
+  background: linear-gradient(135deg, #fff8f0 0%, #f5f0e1 50%, #e8e4dc 100%);
+  background-attachment: fixed;
+  flex-grow: 1;
+  transition: background-color 0.5s var(--ease-in-out), color 0.5s var(--ease-in-out);
+}
+
+body[data-theme='dark'] {
+  background: radial-gradient(circle at 50% 0%, #1c1510 0%, #0c0a09 55%, #060504 100%);
+  background-attachment: fixed;
+  color: var(--textColor);
+}
+
+/* --- dark glassmorphism backdrop layer ---
+   A subtle, layered frosted-glass effect created with multiple
+   absolutely-positioned blobs that sit behind all content. */
+.glassmorphism-layer {
+  position: relative;
+  z-index: 0;
+}
+
+.glassmorphism-orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(var(--glass-blur));
+  opacity: 0.6;
+  animation: glass-orbit 20s ease-in-out infinite;
+  will-change: transform, opacity;
+}
+
+.glassmorphism-orb--1 {
+  width: 400px;
+  height: 400px;
+  top: -100px;
+  left: -100px;
+  background: color-mix(in srgb, var(--glass-accent) 25%, transparent);
+}
+
+.glassmorphism-orb--2 {
+  width: 300px;
+  height: 300px;
+  bottom: -50px;
+  right: -50px;
+  background: color-mix(in srgb, var(--glass-orbit-color) 20%, transparent);
+}
+
+.glassmorphism-orb--3 {
+  width: 200px;
+  height: 200px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: color-mix(in srgb, var(--glass-accent) 15%, transparent);
+}
+
+@keyframes glass-orbit {
+  0%,
+  100% {
+    transform: translate(0, 0) rotate(0deg);
+  }
+  50% {
+    transform: translate(80px, -60px) rotate(180deg);
+  }
+}
+
+/* main content sits above the layer */
+.main-body {
+  position: relative;
+  z-index: 1;
+}
+
+/* Optional: reduce glass motion for prefers-reduced-motion */
+@media (prefers-reduced-motion: reduce) {
+  .glassmorphism-orb {
+    animation: none;
+    opacity: 0.3;
+  }
+}
+
+/* Section-specific orb containers - each section can host its own orbiting
+   glassmorphism orbs that share the same accent and easing tokens. */
+.section-orbs {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+}
+.section-orbs .orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(var(--glass-blur));
+  opacity: 0.6;
+  animation: glass-orbit 20s ease-in-out infinite;
+  will-change: transform, opacity;
+}
+.section-orbs .orb--1 {
+  top: var(--orb-1-top, -100px);
+  left: var(--orb-1-left, -100px);
+  width: 400px;
+  height: 400px;
+  background: color-mix(in srgb, var(--glass-accent) 25%, transparent);
+}
+.section-orbs .orb--2 {
+  bottom: var(--orb-2-bottom, -50px);
+  right: var(--orb-2-right, -50px);
+  width: 300px;
+  height: 300px;
+  background: color-mix(in srgb, var(--glass-orbit-color) 20%, transparent);
+}
+.section-orbs .orb--3 {
+  top: var(--orb-3-top, 50%);
+  left: var(--orb-3-left, 50%);
+  transform: translate(var(--orb-3-horiz, -50%), var(--orb-3-vert, -50%));
+  width: 200px;
+  height: 200px;
+  background: color-mix(in srgb, var(--glass-accent) 15%, transparent);
+}
+
+/* Convenience classes that each section can use out‑of‑the‑box */
+.about-orbs   { --orb-1-top: -120px; --orb-1-left: -120px; --orb-2-bottom: -60px; --orb-2-right: -60px; --orb-3-horiz: -50%; --orb-3-vert: -50px; }
+.projects-orbs { --orb-1-top: -80px; --orb-1-left: -80px; --orb-2-bottom: -40px; --orb-2-right: -40px; --orb-3-horiz: -40%; --orb-3-vert: -40px; }
+.contact-orbs  { --orb-1-top: -100px; --orb-1-left: -100px; --orb-2-bottom: -50px; --orb-2-right: -50px; --orb-3-horiz: -50%; --orb-3-vert: -50px; }
+
+@keyframes glass-orbit {
+  0%,
+  100% {
+    transform: translate(0, 0) rotate(0deg);
+  }
+  50% {
+    transform: translate(80px, -60px) rotate(180deg);
+  }
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font-display);
+  letter-spacing: -0.02em;
+}
+
+a {
+  color: inherit;
+  text-decoration: inherit;
+}
+
+.section-container {
+  width: 1300px;
+  margin: auto;
+}
+
+@media only screen and (max-width: 1600px) {
+  .section-container {
+    width: 1200px;
+    max-width: calc(100% - 160px);
+  }
+}
+
+@media only screen and (max-width: 1400px) {
+  .section-container {
+    width: 900px;
+  }
+}
+
+@media only screen and (max-width: 900px) {
+  .section-container {
+    width: 500px;
+    max-width: var(--cWidth);
+  }
+}
+
+.title,
+.para {
+  font-kerning: none;
+  -webkit-text-rendering: optimizeSpeed;
+  text-rendering: optimizeSpeed;
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0);
+}
+
+/* Moncy-style section label: small caps + accent rule */
+.section-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  color: var(--accentColor);
+  text-transform: uppercase;
+  margin-bottom: 20px;
+}
+
+.section-label::before {
+  content: '';
+  width: 28px;
+  height: 2px;
+  border-radius: 2px;
+  background: var(--accentColor);
+  flex: none;
+}

@@ -1,0 +1,764 @@
+/* ===================================================================
+   TechStack.css - Dr. Strange Sling-Ring Orbital System
+   Mirrors the portal language of Projects.css exactly.
+   =================================================================== */
+
+.ts-section {
+  width: 100%;
+  padding: 120px 0 100px;
+  position: relative;
+  overflow: hidden;
+  perspective: 1200px;
+}
+
+.ts-section .section-container {
+  position: relative;
+  z-index: 1;
+}
+
+/* ── Header ──────────────────────────────────────────────────────── */
+.ts-header {
+  margin-bottom: 48px;
+}
+
+.ts-title-main {
+  font-family: var(--font-display);
+  font-size: clamp(40px, 5.2vw, 72px);
+  font-weight: 700;
+  line-height: 1.05;
+  letter-spacing: -0.035em;
+  color: var(--textColor);
+  text-transform: uppercase;
+  margin: 8px 0 12px;
+}
+
+.ts-title-accent {
+  background: linear-gradient(
+    115deg,
+    #8b5a2b 0%,
+    #c8872a 35%,
+    #f5d398 52%,
+    #8b5a2b 75%,
+    #523112 100%
+  );
+  background-size: 240% 100%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  transition: background-position 0.6s cubic-bezier(0.16, 1, 0.3, 1),
+    filter 0.35s ease;
+}
+
+.ts-header:hover .ts-title-accent {
+  background-position: 100% 0%;
+  filter: drop-shadow(0 4px 18px rgba(200, 135, 42, 0.4));
+}
+
+.ts-sublabel {
+  font-size: 18px;
+  line-height: 1.6;
+  color: var(--textColor);
+  opacity: 0.75;
+  max-width: 480px;
+}
+
+/* ── Decorative sigil rings (background) ─────────────────────────── */
+.ts-sigil-wrap {
+  position: absolute;
+  top: 50%;
+  right: -240px;
+  transform: translateY(-50%);
+  width: 600px;
+  height: 600px;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.09;
+}
+
+.ts-sigil {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.ts-sigil-ring {
+  fill: none;
+  stroke: var(--accentColor);
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+.ts-sigil-ring--1 {
+  stroke-width: 0.6;
+  stroke-dasharray: 0.3 0.7;
+  animation: ts-spin 28s linear infinite;
+}
+
+.ts-sigil-ring--2 {
+  stroke-width: 1;
+  stroke-dasharray: 0.18 0.82;
+  animation: ts-spin 20s linear infinite reverse;
+}
+
+.ts-sigil-ring--3 {
+  stroke-width: 0.5;
+  stroke-dasharray: 0.4 0.6;
+  animation: ts-spin 35s linear infinite;
+}
+
+.ts-sigil-ring--4 {
+  stroke-width: 1.2;
+  stroke-dasharray: 0.22 0.78;
+  animation: ts-spin 16s linear infinite reverse;
+}
+
+/* ── Ambient background orbs ─────────────────────────────────────── */
+.ts-bg-orbs {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.ts-bg-orb {
+  position: absolute;
+  width: 420px;
+  height: 420px;
+  will-change: transform;
+}
+
+.ts-bg-orb--1 { top: -80px; left: -120px; }
+.ts-bg-orb--2 { top: 30%; right: -160px; }
+.ts-bg-orb--3 { bottom: -100px; left: 30%; }
+
+.ts-bg-orb-core {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: radial-gradient(circle, color-mix(in srgb, var(--accentColor) 13%, transparent), transparent 68%);
+  filter: blur(52px);
+  will-change: transform;
+}
+
+.ts-bg-orb--2 .ts-bg-orb-core {
+  background: radial-gradient(circle, rgba(139, 90, 43, 0.1), transparent 68%);
+}
+
+.ts-bg-orb--3 .ts-bg-orb-core {
+  background: radial-gradient(circle, rgba(105, 73, 40, 0.09), transparent 68%);
+}
+
+/* ── Category filter bar ─────────────────────────────────────────── */
+.ts-filter-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 40px;
+}
+
+.ts-filter-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 18px;
+  border-radius: 100px;
+  border: 1px solid rgba(139, 90, 43, 0.22);
+  background: rgba(139, 90, 43, 0.04);
+  color: var(--textColor);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.25s var(--ease-in-out);
+}
+
+.ts-filter-pill:hover {
+  background: rgba(139, 90, 43, 0.1);
+  border-color: var(--accentColor);
+}
+
+.ts-filter-pill--active {
+  background: var(--accentColor);
+  border-color: var(--accentColor);
+  color: #fff8f0;
+  font-weight: 700;
+  box-shadow: 0 4px 16px -4px rgba(139, 90, 43, 0.4);
+}
+
+.ts-filter-count {
+  opacity: 0.65;
+  font-size: 10px;
+}
+
+/* ── Tech orb grid ───────────────────────────────────────────────── */
+.ts-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 20px;
+  will-change: transform, opacity;
+}
+
+/* ── Individual tech orb ─────────────────────────────────────────── */
+.ts-orb {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  aspect-ratio: 1 / 1;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  background: rgba(255, 255, 255, 0.02);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  cursor: pointer;
+  overflow: hidden;
+  transform-style: preserve-3d;
+  will-change: transform;
+  -webkit-tap-highlight-color: transparent;
+  transition:
+    border-color 0.3s var(--ease-in-out),
+    box-shadow 0.3s var(--ease-in-out),
+    background 0.3s var(--ease-in-out);
+  font: inherit;
+  color: var(--textColor);
+}
+
+.ts-orb:hover,
+.ts-orb:focus-visible {
+  border-color: color-mix(in srgb, var(--orb-accent, var(--accentColor)) 50%, transparent);
+  background: color-mix(in srgb, var(--orb-accent, var(--accentColor)) 6%, transparent);
+  box-shadow:
+    0 0 30px -6px color-mix(in srgb, var(--orb-accent, var(--accentColor)) 45%, transparent),
+    0 8px 24px -8px rgba(0, 0, 0, 0.3);
+}
+
+.ts-orb--selected {
+  border-color: var(--orb-accent, var(--accentColor));
+  background: color-mix(in srgb, var(--orb-accent, var(--accentColor)) 10%, transparent);
+  box-shadow:
+    0 0 48px -8px color-mix(in srgb, var(--orb-accent, var(--accentColor)) 60%, transparent);
+}
+
+/* Glowing inner core */
+.ts-orb-core {
+  position: absolute;
+  inset: 15%;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    color-mix(in srgb, var(--orb-accent, var(--accentColor)) 18%, transparent),
+    transparent 70%
+  );
+  opacity: 0;
+  transition: opacity 0.4s var(--ease-in-out);
+  pointer-events: none;
+}
+
+.ts-orb:hover .ts-orb-core,
+.ts-orb:focus-visible .ts-orb-core,
+.ts-orb--selected .ts-orb-core {
+  opacity: 1;
+}
+
+/* Spinning arc rings on each orb */
+.ts-orb-arcs {
+  position: absolute;
+  inset: -12%;
+  width: 124%;
+  height: 124%;
+  overflow: visible;
+  opacity: 0;
+  transition: opacity 0.35s var(--ease-in-out);
+}
+
+.ts-orb:hover .ts-orb-arcs,
+.ts-orb:focus-visible .ts-orb-arcs,
+.ts-orb--selected .ts-orb-arcs {
+  opacity: 1;
+}
+
+.ts-orb-arc {
+  fill: none;
+  stroke: var(--orb-accent, var(--accentColor));
+  stroke-linecap: round;
+  stroke-dasharray: 0.28 0.72;
+  stroke-width: 2.2;
+  filter: drop-shadow(0 0 5px color-mix(in srgb, var(--orb-accent, var(--accentColor)) 80%, transparent));
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: ts-spin 4s linear infinite;
+}
+
+.ts-orb-arc--2 {
+  stroke-dasharray: 0.15 0.85;
+  stroke-width: 3.5;
+  animation-direction: reverse;
+  animation-duration: 6s;
+  opacity: 0.7;
+}
+
+.ts-orb-arc--3 {
+  stroke-dasharray: 0.35 0.65;
+  stroke-width: 1.5;
+  animation-duration: 8s;
+  opacity: 0.5;
+}
+
+/* Cursor spotlight */
+.ts-orb-spotlight {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: radial-gradient(
+    80px circle at var(--spot-x, 50%) var(--spot-y, 50%),
+    rgba(255, 255, 255, 0.1),
+    transparent 70%
+  );
+  pointer-events: none;
+  z-index: 2;
+}
+
+/* Orb content */
+.ts-orb-inner {
+  position: relative;
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 12px;
+}
+
+.ts-orb-glyph {
+  width: 28px;
+  height: 28px;
+  color: var(--orb-accent, var(--accentColor));
+  filter: drop-shadow(0 0 8px color-mix(in srgb, var(--orb-accent, var(--accentColor)) 60%, transparent));
+  transition: transform 0.4s var(--ease-out-strong);
+  flex-shrink: 0;
+}
+
+.ts-orb:hover .ts-orb-glyph,
+.ts-orb:focus-visible .ts-orb-glyph {
+  transform: scale(1.15) rotate(-8deg);
+}
+
+.ts-orb-name {
+  font-family: var(--font-accent);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: var(--textColor);
+  text-align: center;
+  line-height: 1.2;
+}
+
+.ts-orb-cat {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--orb-accent, var(--accentColor));
+  opacity: 0.8;
+  text-align: center;
+}
+
+/* Shine sweep on hover */
+.ts-orb-shine {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: linear-gradient(
+    115deg,
+    transparent 35%,
+    rgba(255, 255, 255, 0.35) 45%,
+    transparent 50%
+  );
+  opacity: 0;
+  transition: opacity 0.4s var(--ease-in-out);
+  pointer-events: none;
+  z-index: 4;
+}
+
+.ts-orb:hover .ts-orb-shine,
+.ts-orb:focus-visible .ts-orb-shine {
+  opacity: 1;
+}
+
+/* ── Burst flare ─────────────────────────────────────────────────── */
+.ts-burst {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 140px;
+  height: 140px;
+  margin: -70px 0 0 -70px;
+  border-radius: 50%;
+  border: 2px solid var(--portal-accent, var(--accentColor));
+  box-shadow:
+    0 0 45px color-mix(in srgb, var(--portal-accent, var(--accentColor)) 75%, transparent),
+    inset 0 0 25px color-mix(in srgb, var(--portal-accent, var(--accentColor)) 50%, transparent);
+  opacity: 0;
+  pointer-events: none;
+  z-index: 5;
+}
+
+/* ── Portal overlay ──────────────────────────────────────────────── */
+.ts-portal {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  visibility: hidden;
+  opacity: 0;
+  pointer-events: none;
+  will-change: transform, opacity;
+  padding: 20px;
+}
+
+.ts-portal-backdrop {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at center, rgba(20, 12, 8, 0.78) 0%, rgba(10, 6, 4, 0.94) 100%);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  cursor: pointer;
+  pointer-events: auto;
+  border: none;
+  padding: 0;
+}
+
+.ts-portal-rig {
+  position: relative;
+  width: min(580px, 94vw);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+
+/* Conic-gradient fire halo */
+.ts-portal-fire {
+  position: absolute;
+  inset: -20px;
+  border-radius: 50%;
+  background: conic-gradient(
+    from 0deg,
+    color-mix(in srgb, var(--portal-accent, var(--accentColor)) 65%, transparent),
+    color-mix(in srgb, var(--portal-accent, var(--accentColor)) 25%, transparent),
+    color-mix(in srgb, var(--portal-accent, var(--accentColor)) 85%, #ffffff 40%),
+    color-mix(in srgb, var(--portal-accent, var(--accentColor)) 20%, transparent),
+    color-mix(in srgb, var(--portal-accent, var(--accentColor)) 65%, transparent)
+  );
+  filter: blur(24px);
+  animation: ts-spin 8s linear infinite;
+  opacity: 0.85;
+}
+
+/* Portal arc rings */
+.ts-portal-arcs {
+  position: absolute;
+  inset: -30px;
+  width: calc(100% + 60px);
+  height: calc(100% + 60px);
+  overflow: visible;
+}
+
+.ts-portal-arc {
+  fill: none;
+  stroke: var(--portal-accent, var(--accentColor));
+  stroke-linecap: round;
+  stroke-dasharray: 0.34 0.66;
+  stroke-width: 1.8;
+  filter: drop-shadow(0 0 8px color-mix(in srgb, var(--portal-accent, var(--accentColor)) 90%, transparent));
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: ts-spin 4s linear infinite;
+}
+
+.ts-portal-arc--2 {
+  stroke-dasharray: 0.2 0.8;
+  stroke-width: 3.2;
+  animation-direction: reverse;
+  animation-duration: 6s;
+  opacity: 0.8;
+}
+
+.ts-portal-arc--3 {
+  stroke-dasharray: 0.28 0.72;
+  stroke-width: 1.2;
+  animation-duration: 7.5s;
+  opacity: 0.65;
+}
+
+.ts-portal-ring {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.ts-portal-ring--outer {
+  inset: -15px;
+  border: 1.5px solid var(--portal-accent, var(--accentColor));
+  box-shadow:
+    0 0 30px color-mix(in srgb, var(--portal-accent, var(--accentColor)) 60%, transparent),
+    inset 0 0 30px color-mix(in srgb, var(--portal-accent, var(--accentColor)) 35%, transparent);
+  animation: ts-pulse 2.5s ease-in-out infinite;
+}
+
+.ts-portal-ring--inner {
+  inset: -5px;
+  border: 1px dashed color-mix(in srgb, var(--portal-accent, var(--accentColor)) 70%, transparent);
+  animation: ts-spin 18s linear infinite reverse;
+}
+
+/* ── Portal card ─────────────────────────────────────────────────── */
+.ts-portal-card {
+  position: relative;
+  width: 100%;
+  max-height: min(680px, 86vh);
+  padding: 32px 36px;
+  border-radius: 28px;
+  background: radial-gradient(circle at 50% 10%, rgba(32, 20, 14, 0.98), rgba(18, 11, 7, 0.99) 80%);
+  border: 1.5px solid color-mix(in srgb, var(--portal-accent, var(--accentColor)) 60%, transparent);
+  box-shadow:
+    0 0 70px -10px color-mix(in srgb, var(--portal-accent, var(--accentColor)) 60%, transparent),
+    0 25px 50px -12px rgba(0, 0, 0, 0.85);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  text-align: left;
+  pointer-events: auto;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--portal-accent, var(--accentColor)) transparent;
+}
+
+/* Shimmer sweep */
+.ts-portal-shimmer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 60%;
+  height: 100%;
+  background: linear-gradient(105deg, transparent, rgba(255, 255, 255, 0.06), transparent);
+  pointer-events: none;
+  will-change: transform;
+  border-radius: inherit;
+}
+
+/* Close pill */
+.ts-portal-close {
+  align-self: flex-end;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  border-radius: 50px;
+  border: 1px solid color-mix(in srgb, var(--portal-accent, var(--accentColor)) 45%, transparent);
+  background: color-mix(in srgb, var(--portal-accent, var(--accentColor)) 10%, transparent);
+  color: var(--portal-accent, var(--accentColor));
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.ts-portal-close:hover {
+  background: var(--portal-accent, var(--accentColor));
+  color: #1a1008;
+  transform: scale(1.04);
+}
+
+/* Portal header */
+.ts-portal-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.ts-portal-glyph {
+  width: 48px;
+  height: 48px;
+  flex-shrink: 0;
+  color: var(--portal-accent, var(--accentColor));
+  filter: drop-shadow(0 0 12px color-mix(in srgb, var(--portal-accent, var(--accentColor)) 80%, transparent));
+}
+
+.ts-portal-kicker {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--portal-accent, var(--accentColor));
+  margin-bottom: 2px;
+}
+
+.ts-portal-title {
+  font-family: var(--font-display);
+  font-size: clamp(24px, 3.2vw, 36px);
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  color: #ffffff;
+  margin: 0;
+}
+
+.ts-portal-desc {
+  font-size: 15px;
+  line-height: 1.7;
+  color: rgba(255, 255, 255, 0.82);
+  margin: 0;
+}
+
+.ts-portal-section-label {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--portal-accent, var(--accentColor));
+  opacity: 0.85;
+  margin-top: 4px;
+}
+
+.ts-portal-involvement {
+  font-size: 14px;
+  line-height: 1.7;
+  color: rgba(255, 255, 255, 0.75);
+  margin: 0;
+  padding-left: 16px;
+  border-left: 2px solid color-mix(in srgb, var(--portal-accent, var(--accentColor)) 50%, transparent);
+}
+
+/* Repo links */
+.ts-portal-repos {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.ts-portal-repo-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 6px 14px;
+  border-radius: 100px;
+  border: 1px solid color-mix(in srgb, var(--portal-accent, var(--accentColor)) 35%, transparent);
+  background: color-mix(in srgb, var(--portal-accent, var(--accentColor)) 8%, transparent);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.05em;
+  color: color-mix(in srgb, var(--portal-accent, var(--accentColor)) 85%, #ffffff);
+  text-decoration: none;
+  transition: all 0.25s var(--ease-in-out);
+}
+
+.ts-portal-repo-link:hover {
+  background: var(--portal-accent, var(--accentColor));
+  color: #1a1008;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px -8px color-mix(in srgb, var(--portal-accent, var(--accentColor)) 60%, transparent);
+}
+
+/* Portal type badge */
+.ts-portal-portal-type {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding-top: 14px;
+  border-top: 1px dashed rgba(255, 255, 255, 0.1);
+  margin-top: 4px;
+}
+
+.ts-portal-type-badge {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 6px;
+  background: color-mix(in srgb, var(--portal-accent, var(--accentColor)) 14%, transparent);
+  border: 1px solid color-mix(in srgb, var(--portal-accent, var(--accentColor)) 30%, transparent);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--portal-accent, var(--accentColor));
+}
+
+/* ── Keyframes ───────────────────────────────────────────────────── */
+@keyframes ts-spin {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes ts-pulse {
+  0%, 100% { opacity: 0.85; transform: scale(1); }
+  50%       { opacity: 1;    transform: scale(1.035); }
+}
+
+/* ── Responsive ──────────────────────────────────────────────────── */
+@media (max-width: 900px) {
+  .ts-grid {
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 16px;
+  }
+
+  .ts-section {
+    padding: 80px 0 60px;
+  }
+
+  .ts-sigil-wrap {
+    width: 360px;
+    height: 360px;
+    right: -160px;
+  }
+}
+
+@media (max-width: 600px) {
+  .ts-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+  }
+
+  .ts-portal-card {
+    padding: 26px 22px;
+  }
+
+  .ts-portal-title {
+    font-size: 26px;
+  }
+
+  .ts-sigil-wrap {
+    display: none;
+  }
+}
+
+@media (max-width: 400px) {
+  .ts-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* ── Reduced motion ──────────────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  .ts-portal-fire,
+  .ts-portal-arc,
+  .ts-portal-ring--outer,
+  .ts-portal-ring--inner,
+  .ts-sigil-ring,
+  .ts-orb-arc {
+    animation: none;
+  }
+}
+

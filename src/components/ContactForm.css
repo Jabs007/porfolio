@@ -1,0 +1,385 @@
+/* ===================================================================
+   ContactForm.css - Dr. Strange Dimensional Transmission Form
+   =================================================================== */
+
+.contact-form-container {
+  position: relative;
+  width: 100%;
+  max-width: 880px;
+  margin: 48px auto 0;
+  padding: 36px 40px;
+  border-radius: 28px;
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(139, 90, 43, 0.2);
+  box-shadow:
+    0 12px 36px -10px rgba(139, 90, 43, 0.08),
+    0 4px 16px rgba(0, 0, 0, 0.04);
+  transition: all 0.35s var(--ease-in-out);
+}
+
+[data-theme='dark'] .contact-form-container {
+  background: rgba(20, 15, 12, 0.6);
+  border-color: rgba(226, 168, 80, 0.2);
+  box-shadow:
+    0 20px 50px -15px rgba(0, 0, 0, 0.6),
+    0 0 30px -10px rgba(226, 168, 80, 0.1);
+}
+
+.contact-form-container:hover {
+  border-color: color-mix(in srgb, var(--accentColor) 45%, transparent);
+}
+
+/* Header */
+.contact-form-header {
+  margin-bottom: 28px;
+}
+
+.contact-form-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 12px;
+  border-radius: 100px;
+  background: color-mix(in srgb, var(--accentColor) 10%, transparent);
+  border: 1px solid color-mix(in srgb, var(--accentColor) 30%, transparent);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--accentColor);
+  margin-bottom: 12px;
+}
+
+.contact-form-badge-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accentColor);
+  box-shadow: 0 0 8px var(--accentColor);
+  animation: pulse-dot 2s ease-in-out infinite;
+}
+
+@keyframes pulse-dot {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.4); opacity: 0.6; }
+}
+
+.contact-form-title {
+  font-family: var(--font-display);
+  font-size: clamp(22px, 2.5vw, 30px);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--textColor);
+  margin: 0 0 6px;
+}
+
+.contact-form-subtitle {
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--textColor);
+  opacity: 0.75;
+  margin: 0;
+  max-width: 580px;
+}
+
+/* Form structure */
+.contact-form-element {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+
+.contact-form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.contact-form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.contact-form-label {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--textColor);
+  opacity: 0.85;
+}
+
+.contact-form-required {
+  color: var(--accentColor);
+}
+
+/* Topic selector pills */
+.contact-topic-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.contact-topic-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  border-radius: 100px;
+  border: 1px solid rgba(139, 90, 43, 0.2);
+  background: rgba(139, 90, 43, 0.04);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  color: var(--textColor);
+  cursor: pointer;
+  transition: all 0.25s var(--ease-in-out);
+}
+
+.topic-svg {
+  width: 14px;
+  height: 14px;
+  stroke: currentColor;
+  opacity: 0.8;
+  transition: transform 0.25s var(--ease-out-strong);
+}
+
+.contact-topic-pill:hover .topic-svg {
+  transform: scale(1.15);
+  opacity: 1;
+}
+
+[data-theme='dark'] .contact-topic-pill {
+  border-color: rgba(226, 168, 80, 0.2);
+  background: rgba(226, 168, 80, 0.05);
+}
+
+.contact-topic-pill:hover {
+  background: color-mix(in srgb, var(--accentColor) 12%, transparent);
+  border-color: var(--accentColor);
+  transform: translateY(-1px);
+}
+
+.contact-topic-pill--active {
+  background: var(--accentColor);
+  border-color: var(--accentColor);
+  color: #fff8f0;
+  font-weight: 700;
+  box-shadow: 0 4px 14px -3px color-mix(in srgb, var(--accentColor) 60%, transparent);
+}
+
+[data-theme='dark'] .contact-topic-pill--active {
+  color: #0c0a09;
+}
+
+/* Input fields */
+.contact-input-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+.contact-input {
+  width: 100%;
+  padding: 14px 18px;
+  border-radius: 14px;
+  border: 1px solid rgba(139, 90, 43, 0.25);
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--textColor);
+  font-family: var(--font-sans);
+  font-size: 15px;
+  line-height: 1.5;
+  transition: all 0.3s var(--ease-in-out);
+  box-sizing: border-box;
+}
+
+[data-theme='dark'] .contact-input {
+  background: rgba(12, 10, 9, 0.5);
+  border-color: rgba(226, 168, 80, 0.22);
+}
+
+.contact-input::placeholder {
+  color: var(--textColor);
+  opacity: 0.4;
+}
+
+.contact-input:focus {
+  outline: none;
+  border-color: var(--accentColor);
+  background: rgba(255, 255, 255, 0.08);
+  box-shadow: 0 0 20px -4px color-mix(in srgb, var(--accentColor) 45%, transparent);
+}
+
+[data-theme='dark'] .contact-input:focus {
+  background: rgba(12, 10, 9, 0.85);
+}
+
+.contact-textarea {
+  resize: vertical;
+  min-height: 110px;
+}
+
+/* Error message */
+.contact-form-error {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  border-radius: 10px;
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  color: #ef4444;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.contact-form-error-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #ef4444;
+  color: #ffffff;
+  font-size: 11px;
+}
+
+/* Submit row */
+.contact-form-submit-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  padding-top: 8px;
+}
+
+.contact-submit-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 28px;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  border-radius: 999px;
+  cursor: pointer;
+}
+
+.contact-submit-arrow {
+  transition: transform 0.3s var(--ease-in-out);
+}
+
+.contact-submit-btn:hover .contact-submit-arrow {
+  transform: translate(3px, -3px);
+}
+
+.contact-submit-spinner {
+  width: 14px;
+  height: 14px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top-color: #ffffff;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.contact-form-privacy {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--textColor);
+  opacity: 0.7;
+}
+
+.privacy-shield-icon {
+  width: 14px;
+  height: 14px;
+  color: var(--accentColor);
+  flex-shrink: 0;
+}
+
+.error-svg {
+  width: 14px;
+  height: 14px;
+  stroke: #ef4444;
+}
+
+/* Success Card */
+.contact-form-success {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 24px 16px;
+  gap: 12px;
+}
+
+.contact-form-success-icon {
+  width: 60px;
+  height: 60px;
+  color: var(--accentColor);
+  filter: drop-shadow(0 0 12px color-mix(in srgb, var(--accentColor) 50%, transparent));
+}
+
+.contact-form-success-title {
+  font-family: var(--font-display);
+  font-size: clamp(22px, 2.8vw, 30px);
+  font-weight: 700;
+  color: var(--textColor);
+  margin: 0;
+}
+
+.contact-form-success-desc {
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--textColor);
+  opacity: 0.8;
+  max-width: 500px;
+  margin: 0 0 12px;
+}
+
+.contact-form-success-actions {
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .contact-form-container {
+    padding: 28px 20px;
+    margin-top: 36px;
+  }
+
+  .contact-form-row {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .contact-form-submit-row {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .contact-submit-btn {
+    justify-content: center;
+  }
+}
+

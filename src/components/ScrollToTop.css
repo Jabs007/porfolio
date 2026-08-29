@@ -1,0 +1,112 @@
+/* ===================================================================
+   ScrollToTop.css - Floating Sling-Ring Apex Orb
+   =================================================================== */
+
+.scroll-to-top-btn {
+  position: fixed;
+  bottom: 32px;
+  right: 32px;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: var(--backgroundColor);
+  border: 1px solid rgba(139, 90, 43, 0.25);
+  box-shadow:
+    0 10px 30px -5px rgba(0, 0, 0, 0.2),
+    0 0 20px -5px color-mix(in srgb, var(--accentColor) 40%, transparent);
+  color: var(--accentColor);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 80;
+  opacity: 0;
+  transform: scale(0.5);
+  pointer-events: none;
+  transition:
+    transform 0.3s var(--ease-out-strong),
+    border-color 0.3s var(--ease-in-out),
+    box-shadow 0.3s var(--ease-in-out),
+    background-color 0.3s var(--ease-in-out);
+  padding: 0;
+}
+
+[data-theme='dark'] .scroll-to-top-btn {
+  background: #14100c;
+  border-color: rgba(226, 168, 80, 0.3);
+  box-shadow:
+    0 10px 30px -5px rgba(0, 0, 0, 0.7),
+    0 0 25px -4px rgba(226, 168, 80, 0.3);
+}
+
+.scroll-to-top-btn:hover {
+  transform: scale(1.12) translateY(-3px) !important;
+  border-color: var(--accentColor);
+  box-shadow:
+    0 14px 34px -5px rgba(0, 0, 0, 0.3),
+    0 0 30px -2px color-mix(in srgb, var(--accentColor) 70%, transparent);
+}
+
+/* Circular SVG Progress Ring */
+.scroll-progress-ring {
+  position: absolute;
+  inset: -1px;
+  width: calc(100% + 2px);
+  height: calc(100% + 2px);
+  transform: rotate(-90deg);
+  pointer-events: none;
+}
+
+.scroll-progress-track {
+  fill: none;
+  stroke: rgba(139, 90, 43, 0.12);
+  stroke-width: 2.2;
+}
+
+[data-theme='dark'] .scroll-progress-track {
+  stroke: rgba(226, 168, 80, 0.12);
+}
+
+.scroll-progress-indicator {
+  fill: none;
+  stroke: var(--accentColor);
+  stroke-width: 2.2;
+  stroke-linecap: round;
+  transition: stroke-dashoffset 0.1s linear;
+}
+
+/* Spark & Arrow */
+.scroll-to-top-arrow {
+  font-family: var(--font-mono);
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 1;
+  transition: transform 0.25s var(--ease-out-strong);
+}
+
+.scroll-to-top-btn:hover .scroll-to-top-arrow {
+  transform: translateY(-2px);
+}
+
+.scroll-to-top-spark {
+  position: absolute;
+  inset: 2px;
+  border-radius: 50%;
+  background: radial-gradient(circle, color-mix(in srgb, var(--accentColor) 15%, transparent), transparent 70%);
+  opacity: 0;
+  transition: opacity 0.3s var(--ease-in-out);
+}
+
+.scroll-to-top-btn:hover .scroll-to-top-spark {
+  opacity: 1;
+}
+
+@media (max-width: 768px) {
+  .scroll-to-top-btn {
+    bottom: 20px;
+    right: 20px;
+    width: 44px;
+    height: 44px;
+  }
+}
+

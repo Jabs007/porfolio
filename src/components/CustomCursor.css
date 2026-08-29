@@ -1,0 +1,119 @@
+/* ===================================================================
+   CustomCursor.css - Dr. Strange Trailing Sling-Ring Spark Cursor
+   =================================================================== */
+
+.custom-cursor-wrapper {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9999;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.custom-cursor--visible {
+  opacity: 1;
+}
+
+/* Center Ember Dot */
+.cursor-dot {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 6px;
+  height: 6px;
+  margin-top: -3px;
+  margin-left: -3px;
+  border-radius: 50%;
+  background: var(--accentColor);
+  box-shadow: 0 0 10px var(--accentColor);
+  pointer-events: none;
+  will-change: transform;
+  transition: transform 0.15s var(--ease-out-strong), background-color 0.2s ease;
+}
+
+.cursor-dot--hovered {
+  transform: scale(1.5);
+}
+
+.cursor-dot--clicked {
+  transform: scale(0.6);
+}
+
+/* Trailing Mystic Ring */
+.cursor-ring {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 36px;
+  height: 36px;
+  margin-top: -18px;
+  margin-left: -18px;
+  border-radius: 50%;
+  border: 1.5px solid color-mix(in srgb, var(--accentColor) 50%, transparent);
+  pointer-events: none;
+  will-change: transform;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition:
+    width 0.3s var(--ease-out-strong),
+    height 0.3s var(--ease-out-strong),
+    margin 0.3s var(--ease-out-strong),
+    border-color 0.3s ease,
+    background-color 0.3s ease,
+    transform 0.15s ease;
+}
+
+.cursor-ring-spark {
+  position: absolute;
+  inset: -3px;
+  border-radius: 50%;
+  border: 1px dashed color-mix(in srgb, var(--accentColor) 40%, transparent);
+  animation: cursor-spin 6s linear infinite;
+}
+
+@keyframes cursor-spin {
+  to { transform: rotate(360deg); }
+}
+
+.cursor-ring--hovered {
+  width: 68px;
+  height: 68px;
+  margin-top: -34px;
+  margin-left: -34px;
+  border-color: var(--accentColor);
+  background: color-mix(in srgb, var(--accentColor) 12%, transparent);
+  box-shadow: 0 0 24px -2px color-mix(in srgb, var(--accentColor) 40%, transparent);
+  backdrop-filter: blur(2px);
+}
+
+.cursor-ring--clicked {
+  transform: scale(0.85);
+}
+
+/* Hover Context Text */
+.cursor-text {
+  font-family: var(--font-mono);
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--accentColor);
+  text-align: center;
+  white-space: nowrap;
+  animation: fade-in 0.2s ease forwards;
+}
+
+@keyframes fade-in {
+  from { opacity: 0; transform: scale(0.8); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+/* Disable on touch devices or reduced motion */
+@media (pointer: coarse), (prefers-reduced-motion: reduce) {
+  .custom-cursor-wrapper {
+    display: none !important;
+  }
+}
+
