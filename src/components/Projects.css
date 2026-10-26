@@ -1,9 +1,15 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   PROJECTS - case files
+   Each project is a file: a framed media band carrying its index numeral and
+   category, then the record (title, description, data line, stack) and one
+   action. One bronze accent everywhere; identity comes from numerals and type.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
 .projects-section {
-  width: 100%;
-  padding: 120px 0 80px;
   position: relative;
+  width: 100%;
+  padding: 120px 0 96px;
   overflow: hidden;
-  perspective: 1200px;
 }
 
 .projects-section .section-container {
@@ -11,56 +17,7 @@
   z-index: 1;
 }
 
-.projects-header-wrap {
-  display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
-  gap: 24px;
-  margin-bottom: 48px;
-}
-
-.projects-title-main {
-  font-family: var(--font-display);
-  font-size: clamp(40px, 5.2vw, 72px);
-  font-weight: 700;
-  line-height: 1.05;
-  letter-spacing: -0.035em;
-  color: var(--textColor);
-  text-transform: uppercase;
-  margin: 0 0 12px;
-  cursor: default;
-}
-
-.projects-title-accent {
-  background: linear-gradient(
-    115deg,
-    #8b5a2b 0%,
-    #c8872a 35%,
-    #f5d398 52%,
-    #8b5a2b 75%,
-    #523112 100%
-  );
-  background-size: 240% 100%;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  transition: background-position 0.6s cubic-bezier(0.16, 1, 0.3, 1), filter 0.35s ease;
-}
-
-.projects-header-wrap:hover .projects-title-accent {
-  background-position: 100% 0%;
-  filter: drop-shadow(0 4px 18px rgba(200, 135, 42, 0.4));
-}
-
-.projects-sublabel {
-  font-size: 18px;
-  line-height: 1.6;
-  color: var(--textColor);
-  opacity: 0.8;
-  margin-top: 8px;
-  max-width: 520px;
-}
-
-/* Ambient floating orbs - drift + mouse parallax (GSAP) */
+/* ---- Ambient orbs (drift + parallax, shared component) ---- */
 .projects-orbs {
   position: absolute;
   inset: 0;
@@ -73,7 +30,6 @@
   position: absolute;
   width: 460px;
   height: 460px;
-  will-change: transform;
 }
 
 .project-orb--1 {
@@ -97,11 +53,10 @@
   border-radius: 50%;
   background: radial-gradient(
     circle,
-    color-mix(in srgb, var(--accentColor) 14%, transparent),
+    color-mix(in srgb, var(--accentColor) 13%, transparent),
     transparent 68%
   );
   filter: blur(48px);
-  will-change: transform, opacity;
 }
 
 .project-orb--2 .project-orb-core {
@@ -112,406 +67,372 @@
   background: radial-gradient(circle, rgba(105, 73, 40, 0.1), transparent 68%);
 }
 
-/* Domain Filter Bar */
-.projects-filter-bar {
+/* ---- Header ---- */
+.projects-header {
   display: flex;
-  align-items: center;
-  gap: 10px;
-  flex-wrap: wrap;
-  margin-bottom: 36px;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 32px;
+  margin-bottom: 40px;
 }
 
-.projects-filter-pill {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 8px 18px;
-  border-radius: 100px;
-  border: 1px solid rgba(139, 90, 43, 0.22);
-  background: rgba(139, 90, 43, 0.04);
-  color: var(--textColor);
-  font-family: var(--font-mono);
-  font-size: 12px;
-  font-weight: 500;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-  cursor: pointer;
-  transition: all 0.25s ease;
+.projects-header-copy {
+  min-width: 0;
 }
 
-.projects-filter-pill:hover {
-  background: rgba(139, 90, 43, 0.1);
-  border-color: var(--accentColor);
-}
-
-.projects-filter-pill--active {
-  background: var(--accentColor);
-  border-color: var(--accentColor);
-  color: #fff8f0;
+.projects-title {
+  margin: 0 0 12px;
+  font-family: var(--font-display);
+  font-size: clamp(40px, 5.2vw, 70px);
   font-weight: 700;
-  box-shadow: 0 4px 16px -4px rgba(139, 90, 43, 0.4);
+  line-height: 1.02;
+  letter-spacing: -0.035em;
+  text-transform: uppercase;
+  color: var(--textColor);
+}
+
+/* Static bronze treatment - no hover sheen on read-only type. */
+.projects-title-accent {
+  background: linear-gradient(112deg, #8b5a2b 0%, #c8872a 40%, #e2a850 62%, #8b5a2b 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.projects-sublabel {
+  max-width: 54ch;
+  margin: 0;
+  font-size: 17px;
+  line-height: 1.65;
+  color: var(--textColor);
+  opacity: 0.78;
+}
+
+.projects-guide {
+  flex: none;
+  margin-bottom: 2px;
+}
+
+/* ---- Filter: text tabs on one rule ---- */
+.projects-filter {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 26px;
+  margin-bottom: 40px;
+  border-bottom: 1px solid color-mix(in srgb, var(--textColor) 14%, transparent);
+}
+
+.projects-filter-btn {
+  position: relative;
+  display: inline-flex;
+  align-items: baseline;
+  gap: 7px;
+  padding: 0 0 13px;
+  border: 0;
+  background: none;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--textColor);
+  opacity: 0.52;
+  cursor: pointer;
+  transition: opacity 0.25s var(--ease-in-out), color 0.25s var(--ease-in-out);
+}
+
+.projects-filter-btn::after {
+  content: '';
+  position: absolute;
+  right: 0;
+  bottom: -1px;
+  left: 0;
+  height: 1px;
+  background: var(--accentColor);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.3s var(--ease-in-out);
+}
+
+.projects-filter-btn:hover {
+  opacity: 0.9;
+}
+
+.projects-filter-btn:focus-visible {
+  outline: 2px solid var(--accentColor);
+  outline-offset: 3px;
+}
+
+.projects-filter-btn--active {
+  opacity: 1;
+  color: var(--accentColor);
+}
+
+.projects-filter-btn--active::after {
+  transform: scaleX(1);
 }
 
 .projects-filter-count {
-  opacity: 0.7;
-  font-size: 11px;
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  opacity: 0.55;
 }
 
-.projects-grid {
+/* ---- Case grid ---- */
+.case-grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 24px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 26px;
 }
 
-/* ---- Animated portal cards ---- */
-.project-card {
+.case-card {
   position: relative;
   display: flex;
   flex-direction: column;
-  align-items: stretch;
-  text-align: left;
-  width: 100%;
-  padding: 0;
-  border-radius: 24px;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  background: rgba(255, 255, 255, 0.02);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  color: var(--textColor);
-  font: inherit;
-  cursor: pointer;
   overflow: hidden;
-  transform-style: preserve-3d;
-  will-change: transform;
-  -webkit-tap-highlight-color: transparent;
-  transition: border-color 0.3s var(--ease-in-out),
-    box-shadow 0.3s var(--ease-in-out),
-    background 0.3s var(--ease-in-out);
-}
-
-/* Card Header with Status & Index */
-.project-card-header {
-  position: absolute;
-  top: 14px;
-  left: 16px;
-  right: 16px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  z-index: 4;
-  pointer-events: none;
-}
-
-.project-status-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 4px 10px;
-  border-radius: 50px;
-  background: rgba(15, 10, 8, 0.75);
-  border: 1px solid color-mix(in srgb, var(--card-accent, var(--accentColor)) 45%, transparent);
-  backdrop-filter: blur(8px);
-  font-family: var(--font-mono);
-  font-size: 10px;
-  font-weight: 600;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: #ffffff;
-}
-
-.project-status-dot {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: var(--card-accent, var(--accentColor));
-  box-shadow: 0 0 8px var(--card-accent, var(--accentColor));
-}
-
-.project-card-index {
-  font-family: var(--font-mono);
-  font-size: 13px;
-  font-weight: 700;
-  letter-spacing: 0.1em;
-  color: rgba(255, 255, 255, 0.7);
-  background: rgba(15, 10, 8, 0.6);
-  padding: 4px 8px;
+  border: 1px solid color-mix(in srgb, var(--textColor) 16%, transparent);
   border-radius: 8px;
-  backdrop-filter: blur(8px);
+  background: color-mix(in srgb, var(--textColor) 2.5%, transparent);
+  transition: border-color 0.3s var(--ease-in-out), background 0.3s var(--ease-in-out);
 }
 
-/* Themed visual - accent gradient + floating glyph + shine sweep */
-.project-visual {
+.case-card:hover,
+.case-card:focus-within,
+.case-card--open {
+  border-color: color-mix(in srgb, var(--accentColor) 62%, transparent);
+  background: color-mix(in srgb, var(--textColor) 4%, transparent);
+}
+
+/* ---- Media band: numeral + category frame ---- */
+.case-media {
   position: relative;
-  width: 100%;
-  aspect-ratio: 16 / 9;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  aspect-ratio: 16 / 10;
   overflow: hidden;
-  background:
-    radial-gradient(circle at 22% 24%, color-mix(in srgb, var(--card-accent, var(--accentColor)) 30%, transparent), transparent 60%),
-    radial-gradient(circle at 80% 82%, color-mix(in srgb, var(--card-accent, var(--accentColor)) 20%, transparent), transparent 58%),
-    rgba(255, 255, 255, 0.015);
-  transition: transform 0.6s var(--ease-in-out);
+  border-bottom: 1px solid color-mix(in srgb, var(--textColor) 16%, transparent);
+  background: color-mix(in srgb, var(--textColor) 4%, transparent);
 }
 
-.project-card:hover .project-visual {
-  transform: scale(1.04);
-}
-
-/* Project visual */
-
-/* Real screenshot behind the glyph (renders only when the file exists in
-   public/screenshots/; onError hides the img and the glyph-only look stands) */
-.project-screenshot {
+.case-shot {
   position: absolute;
   inset: 0;
+  z-index: 1;
   width: 100%;
   height: 100%;
   object-fit: cover;
   object-position: center top;
-  opacity: 0.16;
-  filter: saturate(0.85);
-  transition: opacity 0.5s var(--ease-in-out), filter 0.5s var(--ease-in-out);
-  pointer-events: none;
+  transition: transform 0.6s var(--ease-in-out);
+}
+
+.case-card:hover .case-shot,
+.case-card:focus-within .case-shot {
+  transform: scale(1.025);
+}
+
+/* Drafting-grid texture behind the numeral (1px rules, no gradients as imagery) */
+.case-media-grid {
+  position: absolute;
+  inset: 0;
   z-index: 0;
+  background-image:
+    repeating-linear-gradient(
+      to right,
+      color-mix(in srgb, var(--textColor) 7%, transparent) 0 1px,
+      transparent 1px 48px
+    ),
+    repeating-linear-gradient(
+      to bottom,
+      color-mix(in srgb, var(--textColor) 7%, transparent) 0 1px,
+      transparent 1px 48px
+    );
 }
 
-.project-card:hover .project-screenshot,
-.project-card:focus-visible .project-screenshot {
-  opacity: 0.34;
-  filter: saturate(1);
-}
-
-/* Touch devices: no hover, so keep the screenshot slightly more present
-   instead of waiting for a hover state that never comes */
-@media (hover: none), (pointer: coarse) {
-  .project-screenshot {
-    opacity: 0.26;
-  }
-}
-
-.project-visual-inner {
+.case-numeral {
   position: absolute;
-  inset: 0;
-  background: linear-gradient(
-    135deg,
-    rgba(255, 255, 255, 0.04) 0%,
-    rgba(255, 255, 255, 0.01) 50%,
-    rgba(255, 255, 255, 0.05) 100%
-  );
+  bottom: 6px;
+  left: 22px;
+  z-index: 0;
+  font-family: var(--font-display);
+  font-size: clamp(84px, 9vw, 132px);
+  font-weight: 700;
+  line-height: 0.8;
+  letter-spacing: -0.045em;
+  color: transparent;
+  -webkit-text-stroke: 1px color-mix(in srgb, var(--accentColor) 40%, transparent);
+  opacity: 0.75;
+  transition: opacity 0.3s var(--ease-in-out);
+  user-select: none;
 }
 
-.project-emoji-float {
-  position: relative;
-  z-index: 1;
-  display: inline-flex;
-  animation: project-emoji-float 5s ease-in-out infinite;
-  will-change: transform;
-}
-
-.project-emoji {
-  width: 54px;
-  height: 54px;
-  color: var(--card-accent, var(--accentColor));
-  filter: drop-shadow(
-    0 8px 22px color-mix(in srgb, var(--card-accent, var(--accentColor)) 45%, transparent)
-  );
-  opacity: 0.95;
-  display: block;
-  transition: transform 0.5s var(--ease-out-strong);
-}
-
-.project-card:hover .project-emoji {
-  transform: scale(1.12) rotate(-6deg);
-}
-
-.project-shine {
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(
-    105deg,
-    transparent 35%,
-    rgba(255, 255, 255, 0.4) 45%,
-    transparent 50%
-  );
-  opacity: 0;
-  transition: opacity 0.4s var(--ease-in-out);
-  pointer-events: none;
-  z-index: 2;
-}
-
-.project-card:hover .project-shine,
-.project-card:focus-visible .project-shine {
+.case-card:hover .case-numeral,
+.case-card:focus-within .case-numeral {
   opacity: 1;
 }
 
-.project-body {
-  display: block;
-  position: relative;
-  z-index: 1;
-  padding: 22px 26px 26px;
-}
-
-.project-category {
-  display: block;
-  margin-bottom: 10px;
+.case-media-caption {
+  position: absolute;
+  top: 18px;
+  left: 22px;
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 10px;
+  border-radius: 3px;
+  background: color-mix(in srgb, var(--backgroundColor) 82%, transparent);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
   font-family: var(--font-mono);
-  font-size: 11px;
+  font-size: 9.5px;
   font-weight: 600;
-  letter-spacing: 0.2em;
+  letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: var(--card-accent, var(--accentColor));
+  color: var(--accentColor);
 }
 
-.project-title {
+.case-media-caption::before {
+  content: '';
+  width: 5px;
+  height: 5px;
+  background: var(--accentColor);
+  flex: none;
+}
+
+/* ---- Record body ---- */
+.case-body {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  padding: 22px 24px 24px;
+}
+
+.case-title {
+  margin: 0 0 10px;
   font-family: var(--font-display);
-  font-size: clamp(20px, 2.2vw, 28px);
+  font-size: clamp(20px, 2vw, 26px);
   font-weight: 700;
-  color: var(--textColor);
-  margin: 0 0 12px;
+  line-height: 1.22;
   letter-spacing: -0.02em;
-  line-height: 1.25;
+  color: var(--textColor);
 }
 
-.project-desc {
-  font-size: 15px;
-  line-height: 1.7;
-  color: var(--textColor);
-  opacity: 0.8;
-  margin: 0 0 20px;
-  font-kerning: none;
+.case-desc {
   display: -webkit-box;
+  margin: 0 0 16px;
+  overflow: hidden;
+  font-size: 14.5px;
+  line-height: 1.68;
+  color: var(--textColor);
+  opacity: 0.78;
   -webkit-line-clamp: 3;
   line-clamp: 3;
   -webkit-box-orient: vertical;
-  overflow: hidden;
 }
 
-.project-tech {
+.case-data {
   display: flex;
   flex-wrap: wrap;
+  align-items: baseline;
   gap: 8px;
-  margin-bottom: 20px;
+  margin: 0 0 14px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
 }
 
-.tech-tag {
-  padding: 6px 14px;
-  border-radius: 100px;
-  border: 1px solid rgba(139, 90, 43, 0.25);
-  background: rgba(139, 90, 43, 0.06);
+.case-data-metric {
+  color: var(--accentColor);
+  font-weight: 600;
+}
+
+.case-data-sep {
+  color: var(--textColor);
+  opacity: 0.32;
+}
+
+.case-data-status {
+  color: var(--textColor);
+  opacity: 0.6;
+}
+
+.case-tech {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0;
+  margin: 0 0 18px;
   font-family: var(--font-mono);
   font-size: 11px;
-  font-weight: 500;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
+  letter-spacing: 0.04em;
   color: var(--textColor);
-  opacity: 0.85;
-  transition: border-color 0.3s var(--ease-in-out), color 0.3s var(--ease-in-out), opacity 0.3s var(--ease-in-out);
+  opacity: 0.66;
 }
 
-.project-card:hover .tech-tag,
-.project-card:focus-visible .tech-tag {
-  border-color: var(--card-accent, var(--accentColor));
-  color: var(--card-accent, var(--accentColor));
+.case-tech-tag + .case-tech-tag::before {
+  content: '·';
+  margin: 0 8px;
+  opacity: 0.55;
+}
+
+.case-tech-tag--more {
+  color: var(--accentColor);
   opacity: 0.9;
 }
 
-.project-metric-pill {
-  position: absolute;
-  bottom: 12px;
-  right: 14px;
-  z-index: 3;
-  padding: 4px 10px;
-  border-radius: 6px;
-  background: rgba(15, 10, 8, 0.75);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  backdrop-filter: blur(8px);
-  font-family: var(--font-mono);
-  font-size: 10px;
-  font-weight: 600;
-  letter-spacing: 0.06em;
-  color: #f5d398;
-  pointer-events: none;
-}
-
-.project-card-footer {
+.case-cta {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 12px;
-  margin-top: 8px;
+  margin-top: auto;
   padding-top: 14px;
-  border-top: 1px solid rgba(139, 90, 43, 0.12);
-  flex-wrap: wrap;
-}
-
-.project-hint {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
+  border-top: 1px solid color-mix(in srgb, var(--textColor) 12%, transparent);
   font-family: var(--font-mono);
-  font-size: 11px;
+  font-size: 10.5px;
   font-weight: 600;
-  letter-spacing: 0.15em;
+  letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: var(--card-accent, var(--accentColor));
+  color: var(--textColor);
+  opacity: 0.7;
+  transition: opacity 0.25s var(--ease-in-out), color 0.25s var(--ease-in-out);
 }
 
-.project-hint span {
+.case-cta svg {
+  width: 16px;
+  height: 16px;
   transition: transform 0.3s var(--ease-in-out);
 }
 
-.project-card:hover .project-hint span,
-.project-card:focus-visible .project-hint span,
-.project-card--selected .project-hint span {
-  transform: translateX(5px);
+.case-card:hover .case-cta,
+.case-card:focus-within .case-cta {
+  opacity: 1;
+  color: var(--accentColor);
 }
 
-.project-quick-actions {
-  display: flex;
-  align-items: center;
-  gap: 8px;
+.case-card:hover .case-cta svg,
+.case-card:focus-within .case-cta svg {
+  transform: translateX(4px);
 }
 
-.project-quick-link {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  padding: 4px 10px;
-  border-radius: 100px;
-  border: 1px solid rgba(139, 90, 43, 0.3);
-  background: rgba(139, 90, 43, 0.08);
-  font-family: var(--font-mono);
-  font-size: 10px;
-  font-weight: 600;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-  color: var(--textColor);
-  transition: all 0.2s ease;
-  text-decoration: none;
+/* The whole card is one button; nothing interactive lives inside it. */
+.case-open {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
 }
 
-.project-quick-link:hover {
-  background: var(--card-accent, var(--accentColor));
-  color: #fff8f0;
-  border-color: var(--card-accent, var(--accentColor));
-  transform: translateY(-1px);
+.case-open:focus-visible {
+  outline: 2px solid var(--accentColor);
+  outline-offset: -3px;
 }
 
-.project-quick-link--live {
-  border-color: rgba(34, 197, 94, 0.4);
-  background: rgba(34, 197, 94, 0.1);
-  color: #16a34a;
-}
-
-.project-quick-link--live:hover {
-  background: #22c55e;
-  border-color: #22c55e;
-  color: #ffffff;
-}
-
-/* ---- Themed Dr. Strange portal ---- */
+/* ═══════════════════════════════════════════════════════════════════════════
+   PORTAL - shared SlingRingPortal chrome. Dark in both themes by design.
+   ═══════════════════════════════════════════════════════════════════════════ */
 .project-portal {
   position: fixed;
   inset: 0;
@@ -519,23 +440,23 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  padding: 20px;
   visibility: hidden;
   opacity: 0;
   pointer-events: none;
   will-change: transform, opacity;
-  padding: 20px;
 }
 
 .project-portal-backdrop {
   position: absolute;
   inset: 0;
+  border: 0;
+  padding: 0;
   background: radial-gradient(circle at center, rgba(20, 12, 8, 0.75) 0%, rgba(10, 6, 4, 0.92) 100%);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   cursor: pointer;
   pointer-events: auto;
-  border: none;
-  padding: 0;
 }
 
 .project-portal-burst {
@@ -547,7 +468,8 @@
   margin: -70px 0 0 -70px;
   border-radius: 50%;
   border: 2px solid var(--portal-accent, var(--accentColor));
-  box-shadow: 0 0 45px color-mix(in srgb, var(--portal-accent, var(--accentColor)) 75%, transparent),
+  box-shadow:
+    0 0 45px color-mix(in srgb, var(--portal-accent, var(--accentColor)) 75%, transparent),
     inset 0 0 25px color-mix(in srgb, var(--portal-accent, var(--accentColor)) 50%, transparent);
   opacity: 0;
   pointer-events: none;
@@ -555,10 +477,10 @@
 
 .project-portal-rig {
   position: relative;
-  width: min(640px, 94vw);
   display: flex;
   align-items: center;
   justify-content: center;
+  width: min(660px, 94vw);
   pointer-events: none;
 }
 
@@ -575,8 +497,8 @@
     color-mix(in srgb, var(--portal-accent, var(--accentColor)) 65%, transparent)
   );
   filter: blur(24px);
-  animation: project-portal-spin 8s linear infinite;
   opacity: 0.85;
+  animation: project-portal-spin 8s linear infinite;
 }
 
 .project-portal-arcs {
@@ -591,8 +513,8 @@
   fill: none;
   stroke: var(--portal-accent, var(--accentColor));
   stroke-linecap: round;
-  stroke-dasharray: 0.34 0.66;
   stroke-width: 1.8;
+  stroke-dasharray: 0.34 0.66;
   filter: drop-shadow(0 0 8px color-mix(in srgb, var(--portal-accent, var(--accentColor)) 90%, transparent));
   transform-box: fill-box;
   transform-origin: center;
@@ -600,16 +522,16 @@
 }
 
 .project-portal-arc--2 {
-  stroke-dasharray: 0.2 0.8;
   stroke-width: 3.2;
+  stroke-dasharray: 0.2 0.8;
   animation-direction: reverse;
   animation-duration: 6s;
   opacity: 0.8;
 }
 
 .project-portal-arc--3 {
-  stroke-dasharray: 0.28 0.72;
   stroke-width: 1.2;
+  stroke-dasharray: 0.28 0.72;
   animation-duration: 7.5s;
   opacity: 0.65;
 }
@@ -623,7 +545,8 @@
 .project-portal-ring--outer {
   inset: -15px;
   border: 1.5px solid var(--portal-accent, var(--accentColor));
-  box-shadow: 0 0 30px color-mix(in srgb, var(--portal-accent, var(--accentColor)) 60%, transparent),
+  box-shadow:
+    0 0 30px color-mix(in srgb, var(--portal-accent, var(--accentColor)) 60%, transparent),
     inset 0 0 30px color-mix(in srgb, var(--portal-accent, var(--accentColor)) 35%, transparent);
   animation: project-portal-pulse 2.5s ease-in-out infinite;
 }
@@ -636,35 +559,45 @@
 
 .project-portal-card {
   position: relative;
-  width: 100%;
-  max-width: 580px;
-  max-height: min(720px, 86vh);
-  padding: 32px 36px;
-  border-radius: 28px;
-  background: radial-gradient(
-    circle at 50% 10%,
-    rgba(32, 20, 14, 0.98),
-    rgba(18, 11, 7, 0.99) 80%
-  );
-  border: 1.5px solid color-mix(in srgb, var(--portal-accent, var(--accentColor)) 60%, transparent);
-  box-shadow: 0 0 70px -10px color-mix(in srgb, var(--portal-accent, var(--accentColor)) 60%, transparent),
-    0 25px 50px -12px rgba(0, 0, 0, 0.85);
   display: flex;
   flex-direction: column;
   gap: 16px;
+  width: 100%;
+  max-width: 600px;
+  max-height: min(720px, 86vh);
+  padding: 30px 34px;
+  border-radius: 26px;
+  background: radial-gradient(circle at 50% 10%, rgba(32, 20, 14, 0.98), rgba(18, 11, 7, 0.99) 80%);
+  border: 1.5px solid color-mix(in srgb, var(--portal-accent, var(--accentColor)) 55%, transparent);
+  box-shadow:
+    0 0 70px -10px color-mix(in srgb, var(--portal-accent, var(--accentColor)) 55%, transparent),
+    0 25px 50px -12px rgba(0, 0, 0, 0.85);
+  overflow-y: auto;
   text-align: left;
   pointer-events: auto;
-  overflow-y: auto;
   scrollbar-width: thin;
   scrollbar-color: var(--portal-accent, var(--accentColor)) transparent;
 }
 
-/* In-Portal Nav Bar */
+/* One-pass shimmer on open (GSAP sweeps it once). */
+.project-portal-shimmer {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(
+    105deg,
+    transparent 32%,
+    rgba(255, 255, 255, 0.14) 50%,
+    transparent 68%
+  );
+  pointer-events: none;
+}
+
 .project-portal-nav {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
-  justify-content: space-between;
-  gap: 12px;
+  gap: 10px;
   padding-bottom: 14px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 }
@@ -684,13 +617,19 @@
   letter-spacing: 0.08em;
   text-transform: uppercase;
   cursor: pointer;
-  transition: background 0.25s ease, transform 0.25s ease, border-color 0.25s ease;
+  transition: background 0.25s ease, border-color 0.25s ease;
 }
 
 .project-portal-step-btn:hover {
   background: color-mix(in srgb, var(--portal-accent, var(--accentColor)) 18%, transparent);
   border-color: var(--portal-accent, var(--accentColor));
-  transform: translateY(-1px);
+}
+
+.project-portal-step-btn:focus-visible,
+.project-portal-close-pill:focus-visible,
+.project-portal-link:focus-visible {
+  outline: 2px solid var(--portal-accent, var(--accentColor));
+  outline-offset: 2px;
 }
 
 .project-portal-step-counter {
@@ -705,6 +644,7 @@
   display: inline-flex;
   align-items: center;
   gap: 6px;
+  margin-left: auto;
   padding: 6px 14px;
   border-radius: 50px;
   border: 1px solid color-mix(in srgb, var(--portal-accent, var(--accentColor)) 45%, transparent);
@@ -715,13 +655,12 @@
   font-weight: 600;
   letter-spacing: 0.1em;
   cursor: pointer;
-  transition: all 0.25s ease;
+  transition: background 0.25s ease, color 0.25s ease;
 }
 
 .project-portal-close-pill:hover {
   background: var(--portal-accent, var(--accentColor));
   color: #1a1008;
-  transform: scale(1.04);
 }
 
 .project-portal-header {
@@ -734,51 +673,51 @@
   font-family: var(--font-mono);
   font-size: 11px;
   font-weight: 600;
-  letter-spacing: 0.25em;
+  letter-spacing: 0.24em;
   text-transform: uppercase;
   color: var(--portal-accent, var(--accentColor));
 }
 
 .project-portal-title {
+  margin: 0;
   font-family: var(--font-display);
-  font-size: clamp(24px, 3.2vw, 34px);
+  font-size: clamp(23px, 3vw, 32px);
   font-weight: 700;
-  line-height: 1.1;
+  line-height: 1.14;
   letter-spacing: -0.02em;
   color: #ffffff;
-  margin: 0;
 }
 
 .project-portal-desc {
+  margin: 0;
   font-size: 15px;
   line-height: 1.7;
   color: rgba(255, 255, 255, 0.8);
-  margin: 0;
 }
 
 .project-portal-section-label {
+  margin-top: 4px;
   font-family: var(--font-mono);
-  font-size: 11px;
+  font-size: 10.5px;
   font-weight: 600;
   letter-spacing: 0.2em;
   text-transform: uppercase;
   color: var(--portal-accent, var(--accentColor));
   opacity: 0.9;
-  margin-top: 4px;
 }
 
 .project-portal-features {
-  list-style: none;
-  margin: 0;
-  padding: 0;
   display: flex;
   flex-direction: column;
   gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
 }
 
 .project-portal-feature {
   position: relative;
-  padding-left: 24px;
+  padding-left: 22px;
   font-size: 14px;
   line-height: 1.6;
   color: rgba(255, 255, 255, 0.85);
@@ -787,13 +726,12 @@
 .project-portal-feature::before {
   content: '';
   position: absolute;
+  top: 0.58em;
   left: 2px;
-  top: 0.55em;
-  width: 6px;
-  height: 6px;
+  width: 5px;
+  height: 5px;
   background: var(--portal-accent, var(--accentColor));
   transform: rotate(45deg);
-  box-shadow: 0 0 10px color-mix(in srgb, var(--portal-accent, var(--accentColor)) 80%, transparent);
 }
 
 .project-portal-tech {
@@ -803,12 +741,12 @@
 }
 
 .project-portal-tag {
-  padding: 6px 14px;
+  padding: 5px 12px;
   border-radius: 100px;
   border: 1px solid color-mix(in srgb, var(--portal-accent, var(--accentColor)) 35%, transparent);
   background: color-mix(in srgb, var(--portal-accent, var(--accentColor)) 8%, transparent);
   font-family: var(--font-mono);
-  font-size: 11px;
+  font-size: 10.5px;
   font-weight: 500;
   letter-spacing: 0.05em;
   text-transform: uppercase;
@@ -817,9 +755,9 @@
 
 .project-portal-links {
   display: flex;
-  gap: 14px;
   flex-wrap: wrap;
-  margin-top: 8px;
+  gap: 12px;
+  margin-top: 6px;
   padding-top: 18px;
   border-top: 1px dashed rgba(255, 255, 255, 0.12);
 }
@@ -828,35 +766,30 @@
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  padding: 12px 24px;
+  padding: 11px 22px;
   border-radius: 999px;
   border: 1px solid color-mix(in srgb, var(--portal-accent, var(--accentColor)) 45%, transparent);
   background: transparent;
   color: var(--portal-accent, var(--accentColor));
   font-family: var(--font-mono);
-  font-size: 12px;
+  font-size: 11.5px;
   font-weight: 600;
-  letter-spacing: 0.15em;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
-  cursor: pointer;
-  transition: transform 0.3s var(--ease-in-out), background 0.3s var(--ease-in-out), box-shadow 0.3s var(--ease-in-out);
+  transition: background 0.25s ease, color 0.25s ease;
 }
 
-.project-portal-link:hover,
-.project-portal-link:focus-visible {
-  transform: translateY(-2px);
+.project-portal-link:hover {
   background: color-mix(in srgb, var(--portal-accent, var(--accentColor)) 16%, transparent);
-  box-shadow: 0 12px 34px -12px color-mix(in srgb, var(--portal-accent, var(--accentColor)) 60%, transparent);
 }
 
 .project-portal-link--primary {
   background: var(--portal-accent, var(--accentColor));
-  color: #1a1008;
   border-color: transparent;
+  color: #1a1008;
 }
 
-.project-portal-link--primary:hover,
-.project-portal-link--primary:focus-visible {
+.project-portal-link--primary:hover {
   background: color-mix(in srgb, var(--portal-accent, var(--accentColor)) 85%, #ffffff);
 }
 
@@ -878,44 +811,54 @@
   }
 }
 
-@keyframes project-emoji-float {
-  0%,
-  100% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(-7px);
-  }
-}
-
+/* ---- Responsive ---- */
 @media (max-width: 900px) {
-  .projects-grid {
-    grid-template-columns: 1fr;
+  .projects-section {
+    padding: 84px 0 56px;
+  }
+
+  .case-grid {
+    grid-template-columns: minmax(0, 1fr);
     gap: 20px;
   }
-  .projects-section {
-    padding: 80px 0 40px;
+
+  .projects-guide {
+    display: none;
+  }
+
+  .projects-filter {
+    gap: 20px;
   }
 }
 
 @media (max-width: 600px) {
-  .project-portal-card {
-    width: 86vw;
-    padding: 26px 22px;
+  .case-body {
+    padding: 20px 20px 22px;
   }
+
+  .case-numeral {
+    left: 18px;
+    font-size: 78px;
+  }
+
+  .case-media-caption {
+    top: 14px;
+    left: 18px;
+    font-size: 9px;
+  }
+
+  .projects-filter-btn {
+    font-size: 10px;
+    letter-spacing: 0.1em;
+  }
+
+  .project-portal-card {
+    padding: 24px 20px;
+  }
+
   .project-portal-link {
     flex: 1;
     justify-content: center;
-  }
-}
-
-@media (max-width: 500px) {
-  .project-body {
-    padding: 18px 20px 22px;
-  }
-  .project-emoji {
-    width: 40px;
-    height: 40px;
   }
 }
 
@@ -926,9 +869,7 @@
   .project-portal-ring--inner {
     animation: none;
   }
-  .project-emoji-float {
-    animation: none;
-  }
+
   .project-orb {
     opacity: 0.5;
   }

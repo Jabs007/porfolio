@@ -222,13 +222,13 @@ export const cv = {
   downloadName: 'Adams-Jabali-CV.pdf',
 };
 
-// Projects section - animated cards that open a themed sling-ring portal.
-// `color` themes the card (visual, spotlight, tags) AND the portal (accent);
-// `icon` is the card's visual glyph (rendered as a themed SVG in Projects.jsx);
-// `features` power the portal list.
-// `screenshot` (optional): a real product screenshot shown faintly behind the
-// glyph. Drop the files into public/screenshots/ with these names - while a
-// file is missing, the card silently falls back to the glyph-only look.
+// Projects section - case-file cards that open a sling-ring portal.
+// All projects share the site accent (one bronze), so there is no per-project
+// `color`; identity comes from the index numeral, category and content.
+// `status` + `metric` render as one mono data line; `features` power the portal.
+// `screenshot` (optional): a real product screenshot for the media band. Drop
+// the files into public/screenshots/ with these names - while a file is
+// missing, the band falls back to its numeral/category frame.
 export const projects = [
   {
     id: 1,
@@ -237,7 +237,6 @@ export const projects = [
     domain: 'ml',
     status: 'PRODUCTION ML',
     metric: '4 Clusters · 100K+ Txns',
-    icon: 'chart-bars',
     screenshot: '/screenshots/b2c-segmentation.png',
     description:
       'Full-stack ML platform for enterprise customer segmentation using K-Means clustering and RFM analysis. Features React 19 frontend, Express + tRPC typed backend, PostgreSQL relational store, and automated scikit-learn training pipeline.',
@@ -249,7 +248,6 @@ export const projects = [
     ],
     tech: ['React 19', 'TypeScript', 'Node.js', 'PostgreSQL', 'Python', 'scikit-learn'],
     github: 'https://github.com/Jabs007/B2C-SEGEMENTATION',
-    color: '#8b5a2b',
   },
   {
     id: 2,
@@ -258,7 +256,6 @@ export const projects = [
     domain: 'bi',
     status: 'LIVE DEPLOYMENT',
     metric: '50+ Institutions · Instant KPIs',
-    icon: 'chart-line',
     screenshot: '/screenshots/kuccps-dashboard.png',
     description:
       'Interactive data analytics and visual intelligence dashboard for Kenyan national placement records. Delivers multi-tier dynamic filters, automated trend analyses, KPI benchmarking, and CSV batch exports.',
@@ -271,7 +268,6 @@ export const projects = [
     tech: ['Python', 'Streamlit', 'Plotly', 'Pandas', 'NumPy'],
     github: 'https://github.com/Jabs007/dashboard',
     live: 'https://jabs007-dashboard-kuccps-dashboard-mtwg8g.streamlit.app/',
-    color: '#c8872a',
   },
   {
     id: 3,
@@ -280,7 +276,6 @@ export const projects = [
     domain: 'web',
     status: 'LIVE PROTOTYPE',
     metric: 'RBAC Security · Sub-60ms API',
-    icon: 'shopping-cart',
     screenshot: '/screenshots/vendorhub.png',
     description:
       'Scalable multi-vendor marketplace architecture engineered with React, Node.js, Express, and MongoDB. Implements role-based access control, secure JWT authentication, inventory lifecycle pipelines, and cart persistence.',
@@ -292,7 +287,6 @@ export const projects = [
     ],
     tech: ['React', 'Node.js', 'Express', 'MongoDB', 'JWT', 'REST API'],
     github: 'https://github.com/Jabs007',
-    color: '#f59e0b',
   },
   {
     id: 4,
@@ -301,7 +295,6 @@ export const projects = [
     domain: 'ml',
     status: 'OPEN SOURCE',
     metric: 'NLP Matching · Custom Roadmaps',
-    icon: 'compass',
     screenshot: '/screenshots/career-recommender.png',
     description:
       'NLP-driven career matching and course guidance engine for university graduates. Leverages TF-IDF vectorization and cosine similarity to map student academic profiles to personalized industry skill roadmaps.',
@@ -313,7 +306,6 @@ export const projects = [
     ],
     tech: ['Python', 'NLP', 'scikit-learn', 'Streamlit', 'Pandas'],
     github: 'https://github.com/Jabs007',
-    color: '#38bdf8',
   },
   {
     id: 5,
@@ -322,7 +314,6 @@ export const projects = [
     domain: 'ml',
     status: 'PRODUCTION ML',
     metric: '94.2% ROC-AUC · Real-Time Scoring',
-    icon: 'shield-check',
     screenshot: '/screenshots/loan-default.png',
     description:
       'Predictive machine learning pipeline designed to assess retail borrower risk and predict default probability. Implements automated outlier handling, SMOTE class balancing, and ensemble gradient boosting with explainable SHAP metrics.',
@@ -334,7 +325,6 @@ export const projects = [
     ],
     tech: ['Python', 'scikit-learn', 'XGBoost', 'SHAP', 'FastAPI', 'Pandas'],
     github: 'https://github.com/Jabs007/loan-default-prediction',
-    color: '#22c55e',
   },
   {
     id: 6,
@@ -343,7 +333,6 @@ export const projects = [
     domain: 'bi',
     status: 'RESEARCH & LAB',
     metric: 'Matrix Factorization · SVD Engine',
-    icon: 'cpu',
     screenshot: '/screenshots/cf-lab.png',
     description:
       'Matrix factorization and collaborative filtering engine engineered to model high-dimensional sparse user-item interaction matrices. Features Singular Value Decomposition (SVD), cosine item similarity, and containerized deployment.',
@@ -355,7 +344,6 @@ export const projects = [
     ],
     tech: ['Python', 'SciPy', 'NumPy', 'Docker', 'FastAPI', 'scikit-learn'],
     github: 'https://github.com/Jabs007/group-4',
-    color: '#a855f7',
   },
 ];
 
