@@ -5,6 +5,9 @@ import { useGSAP } from '@gsap/react';
 import { hero } from '../data/content';
 import { prefersReducedMotion } from '../utils/motion.js';
 import useFocusTrap from '../hooks/useFocusTrap';
+import SlingRingPortal from '../shared/SlingRingPortal';
+import AmbientOrbs from '../shared/AmbientOrbs';
+import useTiltMagnet from '../shared/useTiltMagnet';
 import './TechStack.css';
 
 gsap.registerPlugin(ScrollTrigger);
@@ -83,10 +86,7 @@ function TechGlyph({ portalType, className }) {
 export default function TechStack() {
   const sectionRef = useRef(null);
   const gridRef = useRef(null);
-  const orbsRef = useRef(null);
-  const portalRef = useRef(null);
   const portalCardRef = useRef(null);
-  const burstRef = useRef(null);
   const burstPosRef = useRef(null);
   const sigil1Ref = useRef(null);
 
@@ -127,63 +127,9 @@ export default function TechStack() {
     ? techstack
     : techstack.filter((t) => t.category === activeCategory);
 
-  // Portal open / close: mirrors Projects.jsx exactly
-  useGSAP(
-    () => {
-      const portal = portalRef.current;
-      if (!portal) return;
-      const hasReduced = prefersReducedMotion();
-
-      if (selected === null) {
-        const burst = burstRef.current;
-        const pos = burstPosRef.current;
-        if (burst && pos && !hasReduced) {
-          gsap.set(burst, { x: pos.x, y: pos.y, scale: 0.35, opacity: 0.9 });
-          gsap.to(burst, { scale: 1.6, opacity: 0, duration: 0.45, ease: 'power2.out', overwrite: 'auto' });
-        }
-        gsap.set(portal, { visibility: 'visible' });
-        gsap.to(portal, {
-          scale: 0.25,
-          rotation: hasReduced ? 0 : 8,
-          opacity: 0,
-          duration: hasReduced ? 0.1 : 0.35,
-          ease: 'power2.in',
-          overwrite: 'auto',
-          onComplete: () => gsap.set(portal, { visibility: 'hidden', rotation: 0 }),
-        });
-        return;
-      }
-
-      gsap.set(portal, { visibility: 'visible' });
-
-      const burst = burstRef.current;
-      const pos = burstPosRef.current;
-      if (burst && pos) {
-        gsap.set(burst, { x: pos.x, y: pos.y, scale: 0.3, opacity: 1 });
-        gsap.to(burst, { scale: 1.7, opacity: 0, duration: hasReduced ? 0.1 : 0.7, ease: 'power2.out', overwrite: 'auto' });
-      }
-
-      gsap.fromTo(
-        portal,
-        { scale: 0.3, rotation: hasReduced ? 0 : -5, opacity: 0 },
-        { scale: 1, rotation: 0, opacity: 1, duration: hasReduced ? 0.2 : 0.55, ease: 'back.out(1.6)', overwrite: 'auto' }
-      );
-
-      const card = portalCardRef.current;
-      if (card) {
-        gsap.fromTo(card, { y: 24, opacity: 0 }, { y: 0, opacity: 1, duration: hasReduced ? 0.15 : 0.4, delay: hasReduced ? 0 : 0.12, ease: 'power3.out', overwrite: 'auto' });
-        const items = gsap.utils.toArray('.ts-portal-card > :not(.ts-portal-shimmer):not(.ts-portal-close)', card);
-        if (items.length) {
-          gsap.fromTo(items, { y: 16, opacity: 0 }, { y: 0, opacity: 1, duration: 0.38, delay: hasReduced ? 0 : 0.28, ease: 'power3.out', stagger: 0.055, overwrite: 'auto' });
-        }
-        const shimmer = card.querySelector('.ts-portal-shimmer');
-        if (shimmer && !hasReduced) {
-          gsap.fromTo(shimmer, { xPercent: -140 }, { xPercent: 140, duration: 1.1, delay: 0.28, ease: 'power2.inOut', overwrite: 'auto' });
-        }
-      }
-    },
-    { scope: sectionRef, dependencies: [selected] }
-  );
+  // Portal open / close is owned by the shared SlingRingPortal component
+  // (rendered below); it replays on every `selected` change exactly like the
+  // previous per-section implementation.
 
   // Scroll reveal: scale-in + stagger batch for tech orbs
   useGSAP(
@@ -213,73 +159,21 @@ export default function TechStack() {
     { scope: sectionRef }
   );
 
-  // 3D tilt + spotlight on each orb
-  useGSAP(
-    () => {
-      if (prefersReducedMotion()) return;
-      const grid = gridRef.current;
-      if (!grid) return;
-      const orbs = gsap.utils.toArray('.ts-orb', grid);
-      const cleanups = orbs.map((orb) => {
-        const tX = gsap.quickTo(orb, 'rotationX', { duration: 0.55, ease: 'power3.out' });
-        const tY = gsap.quickTo(orb, 'rotationY', { duration: 0.55, ease: 'power3.out' });
-        const spot = { x: 0, y: 0 };
-        const sX = gsap.quickTo(spot, 'x', { duration: 0.4, ease: 'power3.out', onUpdate: () => orb.style.setProperty('--spot-x', `${spot.x}px`) });
-        const sY = gsap.quickTo(spot, 'y', { duration: 0.4, ease: 'power3.out', onUpdate: () => orb.style.setProperty('--spot-y', `${spot.y}px`) });
+  // 3D tilt + spotlight on each orb (shared hook; re-runs when the filter changes)
+  useTiltMagnet(gridRef, '.ts-orb', {
+    tilt: 14,
+    magnet: 0,
+    lift: 0,
+    deps: [filteredTech.length],
+  });
 
-        const onMove = (e) => {
-          const r = orb.getBoundingClientRect();
-          const px = (e.clientX - r.left) / r.width - 0.5;
-          const py = (e.clientY - r.top) / r.height - 0.5;
-          tY(px * 14);
-          tX(py * -14);
-          sX(e.clientX - r.left);
-          sY(e.clientY - r.top);
-        };
-        const onLeave = () => { tX(0); tY(0); };
-        orb.addEventListener('mousemove', onMove);
-        orb.addEventListener('mouseleave', onLeave);
-        return () => { orb.removeEventListener('mousemove', onMove); orb.removeEventListener('mouseleave', onLeave); };
-      });
-      return () => cleanups.forEach((c) => c());
-    },
-    { scope: gridRef, dependencies: [filteredTech.length] }
-  );
-
-  // Ambient sigil rotation + mouse parallax on background orbs
-  useGSAP(
-    () => {
-      if (prefersReducedMotion()) return;
-      if (orbsRef.current) {
-        const killDrifts = gsap.utils.toArray('.ts-bg-orb-core', orbsRef.current).map((orb, i) => {
-          const tw = gsap.to(orb, { x: gsap.utils.random(-38, 38), y: gsap.utils.random(-24, 24), scale: gsap.utils.random(0.88, 1.12), duration: gsap.utils.random(7, 11), ease: 'sine.inOut', yoyo: true, repeat: -1, delay: i * 0.6 });
-          return () => tw.kill();
-        });
-        const wraps = gsap.utils.toArray('.ts-bg-orb', orbsRef.current);
-        const depths = [72, 48, 96];
-        const parallax = wraps.map((w, i) => ({ xTo: gsap.quickTo(w, 'x', { duration: 1.4, ease: 'power2.out' }), yTo: gsap.quickTo(w, 'y', { duration: 1.4, ease: 'power2.out' }), depth: depths[i % depths.length] }));
-        const section = sectionRef.current;
-        const onMouse = (e) => {
-          const r = section.getBoundingClientRect();
-          const nx = (e.clientX - r.left) / r.width - 0.5;
-          const ny = (e.clientY - r.top) / r.height - 0.5;
-          parallax.forEach((p) => { p.xTo(nx * p.depth); p.yTo(ny * p.depth); });
-        };
-        section.addEventListener('mousemove', onMouse);
-        return () => { killDrifts.forEach((k) => k()); section.removeEventListener('mousemove', onMouse); };
-      }
-    },
-    { scope: sectionRef }
-  );
+  // Ambient orb drift + mouse parallax are owned by the shared AmbientOrbs
+  // component (rendered below).
 
   return (
     <section id="techstack" className="ts-section" ref={sectionRef}>
-      {/* Background ambient orbs */}
-      <div className="ts-bg-orbs" ref={orbsRef} aria-hidden="true">
-        <span className="ts-bg-orb ts-bg-orb--1"><span className="ts-bg-orb-core" /></span>
-        <span className="ts-bg-orb ts-bg-orb--2"><span className="ts-bg-orb-core" /></span>
-        <span className="ts-bg-orb ts-bg-orb--3"><span className="ts-bg-orb-core" /></span>
-      </div>
+      {/* Background ambient orbs (shared component) */}
+      <AmbientOrbs wrapClass="ts-bg-orbs" orbClass="ts-bg-orb" depths={[72, 48, 96]} />
 
       {/* Decorative background sigil rings */}
       <div className="ts-sigil-wrap" aria-hidden="true">
@@ -362,34 +256,20 @@ export default function TechStack() {
       {/* Sling-ring burst flare */}
       <span className="ts-burst" ref={burstRef} aria-hidden="true" />
 
-      {/* Dr. Strange portal - opens on orb click */}
-      <div
-        className="ts-portal"
-        ref={portalRef}
-        role="dialog"
-        aria-modal="true"
-        aria-label={selectedTech ? `${selectedTech.name} details` : 'Tech details'}
-        style={selectedTech ? { '--portal-accent': selectedTech.accent } : undefined}
+      {/* Dr. Strange portal - shared component; accent from the tech's color. */}
+      <SlingRingPortal
+        baseClass="ts-portal"
+        cardClass="ts-portal-card"
+        open={selected}
+        accentColor={selectedTech ? selectedTech.accent : undefined}
+        ariaLabel={selectedTech ? `${selectedTech.name} details` : 'Tech details'}
+        onClose={closePortal}
+        cardRef={portalCardRef}
+        burstPosRef={burstPosRef}
+        animateChildren
       >
-        <div className="ts-portal-backdrop" onClick={closePortal} aria-hidden="true" />
-
-        <div className="ts-portal-rig">
-          {/* Conic-gradient fire */}
-          <span className="ts-portal-fire" aria-hidden="true" />
-
-          {/* Spinning SVG arcs */}
-          <svg className="ts-portal-arcs" viewBox="0 0 100 100" aria-hidden="true" focusable="false">
-            <circle className="ts-portal-arc ts-portal-arc--1" cx="50" cy="50" r="48" pathLength={1} />
-            <circle className="ts-portal-arc ts-portal-arc--2" cx="50" cy="50" r="43" pathLength={1} />
-            <circle className="ts-portal-arc ts-portal-arc--3" cx="50" cy="50" r="38" pathLength={1} />
-          </svg>
-
-          <span className="ts-portal-ring ts-portal-ring--outer" aria-hidden="true" />
-          <span className="ts-portal-ring ts-portal-ring--inner" aria-hidden="true" />
-
-          {selectedTech && (
-            <div className="ts-portal-card" ref={portalCardRef}>
-              <span className="ts-portal-shimmer" aria-hidden="true" />
+        {selectedTech && (
+          <>
 
               {/* Close */}
               <button type="button" className="ts-portal-close" onClick={closePortal} aria-label="Close portal">
@@ -442,10 +322,9 @@ export default function TechStack() {
                 <span className="ts-portal-section-label">PORTAL TYPE</span>
                 <span className="ts-portal-type-badge">{selectedTech.portalType?.replace(/-/g, ' ')}</span>
               </div>
-            </div>
-          )}
-        </div>
-      </div>
+          </>
+        )}
+      </SlingRingPortal>
     </section>
   );
 }

@@ -2,24 +2,43 @@ import { useState, useEffect, useCallback } from 'react';
 import { projects } from '../data/content';
 import './GitHubStats.css';
 
-// Core verified GitHub telemetry for Jabs007
+// Curated language fallback shown only when the GitHub API is unreachable
+// (the UI labels this clearly). Live values replace it once synced.
+const LANGUAGES_FALLBACK = [
+  { name: 'Python', percentage: 44, color: '#3572A5', repos: 8 },
+  { name: 'TypeScript', percentage: 26, color: '#3178C6', repos: 5 },
+  { name: 'JavaScript', percentage: 18, color: '#F7DF1E', repos: 4 },
+  { name: 'Other', percentage: 12, color: '#8b949e', repos: 2 },
+];
+
+// GitHub Linguist standard colors for the languages present in the repo list
+const LINGUIST_COLORS = {
+  Python: '#3572A5',
+  JavaScript: '#f1e05a',
+  TypeScript: '#3178C6',
+  HTML: '#e34c26',
+  CSS: '#563d7c',
+  'Jupyter Notebook': '#DA5B0B',
+  Shell: '#89e051',
+  Java: '#b07219',
+  SCSS: '#c6538c',
+  GLSL: '#5686a5',
+};
+
+// Core verified GitHub telemetry for Jabs007 (starting values = last curated
+// snapshot; every live-syncable field is overwritten from the API)
 const INITIAL_STATS = {
   publicRepos: 19,
   followers: 5,
   following: 8,
   stars: 14,
-  mlModels: 4,
+  mlModels: 4, // curated - ML pipeline count is not derivable from the public API
   primaryLang: 'Python',
   latestRepo: 'B2C-SEGEMENTATION',
   lastUpdated: 'Just now',
+  langRepoCount: 19,
+  languages: LANGUAGES_FALLBACK,
 };
-
-const LANGUAGES = [
-  { name: 'Python', percentage: 44, color: '#3572A5', repos: 8 },
-  { name: 'TypeScript', percentage: 26, color: '#3178C6', repos: 5 },
-  { name: 'JavaScript', percentage: 18, color: '#F7DF1E', repos: 4 },
-  { name: 'SQL & HTML/CSS', percentage: 12, color: '#e34c26', repos: 2 },
-];
 
 export default function GitHubStats() {
   const [stats, setStats] = useState(() => {
@@ -29,7 +48,12 @@ export default function GitHubStats() {
         if (cached) {
           const parsed = JSON.parse(cached);
           if (Date.now() - parsed.timestamp < 1000 * 60 * 30) {
-            return parsed.data;
+            // Older cached snapshots predate the languages field - fall back
+            return {
+              ...INITIAL_STATS,
+              ...parsed.data,
+              languages: parsed.data.languages || LANGUAGES_FALLBACK,
+            };
           }
         }
       } catch {
@@ -41,6 +65,7 @@ export default function GitHubStats() {
 
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [activeTab, setActiveTab] = useState('telemetry'); // 'telemetry' | 'featured'
+  const [langsLive, setLangsLive] = useState(false);
 
   const fetchStats = useCallback(async () => {
     setIsRefreshing(true);
@@ -63,25 +88,14 @@ export default function GitHubStats() {
 
       if (res && res.ok) {
         const data = await res.json();
-        const updated = {
-          publicRepos: data.public_repos || 19,
-          followers: data.followers || 5,
-          following: data.following || 8,
-          stars: 14,
-          mlModels: 4,
-          primaryLang: 'Python',
-          latestRepo: 'B2C-SEGEMENTATION',
+        // Keep any live star/language data already merged by fetchRepos.
+        setStats((prev) => ({
+          ...prev,
+          publicRepos: data.public_repos || prev.publicRepos,
+          followers: data.followers || prev.followers,
+          following: data.following || prev.following,
           lastUpdated: 'Live synced',
-        };
-        setStats(updated);
-        try {
-          localStorage.setItem(
-            'aj_gh_stats',
-            JSON.stringify({ timestamp: Date.now(), data: updated })
-          );
-        } catch {
-          // ignore storage errors
-        }
+        }));
       } else {
         // If rate-limited or error, preserve verified telemetry without crashing
         setStats((prev) => ({
@@ -142,9 +156,9 @@ export default function GitHubStats() {
 
       if (res && res.ok) {
         const all = await res.json();
-        // Skip forks, rank by stars then recency, take the top 3
-        const picked = all
-          .filter((r) => !r.fork)
+        // Skip forks; rank the spotlight by stars then recency, take the top 3
+        const owned = all.filter((r) => !r.fork);
+        const picked = owned
           .sort((a, b) => {
             const byStars = (b.stargazers_count || 0) - (a.stargazers_count || 0);
             if (byStars !== 0) return byStars;
@@ -164,8 +178,48 @@ export default function GitHubStats() {
         if (picked.length > 0) {
           setLiveRepos(picked);
           setReposFailed(false);
-          // Feed the freshest repo name back into the header stats
-          setStats((prev) => ({ ...prev, latestRepo: picked[0].name }));
+          setLangsLive(true);
+
+          // Real telemetry from the same API payload (no extra requests):
+          // total stars across non-fork repos, plus a language breakdown
+          // weighted by each repo's primary language.
+          const totalStars = owned.reduce((sum, r) => sum + (r.stargazers_count || 0), 0);
+          const langCounts = new Map();
+          owned.forEach((r) => {
+            if (r.language) langCounts.set(r.language, (langCounts.get(r.language) || 0) + 1);
+          });
+          const langRepoTotal =
+            [...langCounts.values()].reduce((sum, n) => sum + n, 0) || owned.length;
+          const top = [...langCounts.entries()]
+            .sort((a, b) => b[1] - a[1])
+            .slice(0, 3);
+          const otherCount = langRepoTotal - top.reduce((sum, [, n]) => sum + n, 0);
+          const languages = top.map(([name, count]) => ({
+            name,
+            percentage: Math.round((count / langRepoTotal) * 100),
+            color: LINGUIST_COLORS[name] || '#8b949e',
+            repos: count,
+          }));
+          if (otherCount > 0) {
+            const usedPercent = languages.reduce((sum, l) => sum + l.percentage, 0);
+            languages.push({
+              name: 'Other',
+              percentage: Math.max(100 - usedPercent, 1),
+              color: '#8b949e',
+              repos: otherCount,
+            });
+          }
+
+          // Feed the freshest telemetry into the header stats
+          setStats((prev) => ({
+            ...prev,
+            stars: totalStars,
+            languages,
+            langRepoCount: owned.length,
+            primaryLang: languages[0]?.name || prev.primaryLang,
+            latestRepo: picked[0].name,
+            lastUpdated: 'Live synced',
+          }));
           try {
             localStorage.setItem(
               'aj_gh_repos',
@@ -195,11 +249,22 @@ export default function GitHubStats() {
     fetchStats();
   }, [fetchStats]);
 
+  // Persist any live-fetched stats so the next visit within 30 minutes reads
+  // cached data without hitting the GitHub API again.
+  useEffect(() => {
+    if (stats.lastUpdated === 'Just now') return;
+    try {
+      localStorage.setItem('aj_gh_stats', JSON.stringify({ timestamp: Date.now(), data: stats }));
+    } catch {
+      // ignore storage errors
+    }
+  }, [stats]);
+
   const METRICS = [
     { label: 'PUBLIC REPOS', value: `${stats.publicRepos}+`, desc: '19 public codebases tracked' },
     { label: 'PRIMARY STACK', value: stats.primaryLang, desc: 'ML & full-stack pipelines' },
+    { label: 'TOTAL STARS', value: `${stats.stars}`, desc: 'Sum across non-fork public repos' },
     { label: 'ML PIPELINES', value: `${stats.mlModels}`, desc: 'K-Means, XGBoost, SVD, NLP' },
-    { label: 'LATEST COMMIT', value: 'ACTIVE', desc: 'Continuous weekly iterations' },
   ];
 
   return (
@@ -284,10 +349,18 @@ export default function GitHubStats() {
           <div className="github-langs-section">
             <div className="github-langs-header">
               <span className="github-langs-title">CORE LANGUAGE BREAKDOWN</span>
-              <span className="github-langs-sub">Calculated across 19 public repositories</span>
+              <span className="github-langs-sub">
+                {langsLive
+                  ? `Live · primary language across ${stats.langRepoCount} public repos`
+                  : 'Curated estimate — refresh to sync live from GitHub'}
+              </span>
             </div>
-            <div className="github-lang-bar" role="progressbar" aria-label="Language distribution">
-              {LANGUAGES.map((lang) => (
+            <div
+              className="github-lang-bar"
+              role="progressbar"
+              aria-label={langsLive ? 'Live language distribution' : 'Estimated language distribution'}
+            >
+              {stats.languages.map((lang) => (
                 <div
                   key={lang.name}
                   className="github-lang-segment"
@@ -300,7 +373,7 @@ export default function GitHubStats() {
               ))}
             </div>
             <div className="github-lang-legend">
-              {LANGUAGES.map((lang) => (
+              {stats.languages.map((lang) => (
                 <div key={lang.name} className="github-lang-item">
                   <span
                     className="github-lang-dot"

@@ -227,6 +227,9 @@ export const cv = {
 // `color` themes the card (visual, spotlight, tags) AND the portal (accent);
 // `icon` is the card's visual glyph (rendered as a themed SVG in Projects.jsx);
 // `features` power the portal list.
+// `screenshot` (optional): a real product screenshot shown faintly behind the
+// glyph. Drop the files into public/screenshots/ with these names - while a
+// file is missing, the card silently falls back to the glyph-only look.
 export const projects = [
   {
     id: 1,
@@ -236,6 +239,7 @@ export const projects = [
     status: 'PRODUCTION ML',
     metric: '4 Clusters · 100K+ Txns',
     icon: 'chart-bars',
+    screenshot: '/screenshots/b2c-segmentation.png',
     description:
       'Full-stack ML platform for enterprise customer segmentation using K-Means clustering and RFM analysis. Features React 19 frontend, Express + tRPC typed backend, PostgreSQL relational store, and automated scikit-learn training pipeline.',
     features: [
@@ -256,6 +260,7 @@ export const projects = [
     status: 'LIVE DEPLOYMENT',
     metric: '50+ Institutions · Instant KPIs',
     icon: 'chart-line',
+    screenshot: '/screenshots/kuccps-dashboard.png',
     description:
       'Interactive data analytics and visual intelligence dashboard for Kenyan national placement records. Delivers multi-tier dynamic filters, automated trend analyses, KPI benchmarking, and CSV batch exports.',
     features: [
@@ -277,6 +282,7 @@ export const projects = [
     status: 'LIVE PROTOTYPE',
     metric: 'RBAC Security · Sub-60ms API',
     icon: 'shopping-cart',
+    screenshot: '/screenshots/vendorhub.png',
     description:
       'Scalable multi-vendor marketplace architecture engineered with React, Node.js, Express, and MongoDB. Implements role-based access control, secure JWT authentication, inventory lifecycle pipelines, and cart persistence.',
     features: [
@@ -297,6 +303,7 @@ export const projects = [
     status: 'OPEN SOURCE',
     metric: 'NLP Matching · Custom Roadmaps',
     icon: 'compass',
+    screenshot: '/screenshots/career-recommender.png',
     description:
       'NLP-driven career matching and course guidance engine for university graduates. Leverages TF-IDF vectorization and cosine similarity to map student academic profiles to personalized industry skill roadmaps.',
     features: [
@@ -317,6 +324,7 @@ export const projects = [
     status: 'PRODUCTION ML',
     metric: '94.2% ROC-AUC · Real-Time Scoring',
     icon: 'shield-check',
+    screenshot: '/screenshots/loan-default.png',
     description:
       'Predictive machine learning pipeline designed to assess retail borrower risk and predict default probability. Implements automated outlier handling, SMOTE class balancing, and ensemble gradient boosting with explainable SHAP metrics.',
     features: [
@@ -337,6 +345,7 @@ export const projects = [
     status: 'RESEARCH & LAB',
     metric: 'Matrix Factorization · SVD Engine',
     icon: 'cpu',
+    screenshot: '/screenshots/cf-lab.png',
     description:
       'Matrix factorization and collaborative filtering engine engineered to model high-dimensional sparse user-item interaction matrices. Features Singular Value Decomposition (SVD), cosine item similarity, and containerized deployment.',
     features: [

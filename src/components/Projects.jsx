@@ -5,6 +5,9 @@ import { projects } from '../data/content';
 import { prefersReducedMotion } from '../utils/motion.js';
 import CharacterGuide from './CharacterGuide';
 import useFocusTrap from '../hooks/useFocusTrap';
+import SlingRingPortal from '../shared/SlingRingPortal';
+import AmbientOrbs from '../shared/AmbientOrbs';
+import useTiltMagnet from '../shared/useTiltMagnet';
 import './Projects.css';
 
 gsap.registerPlugin(useGSAP);
@@ -82,10 +85,7 @@ function ProjectIcon({ name, className }) {
 export default function Projects() {
   const sectionRef = useRef(null);
   const gridRef = useRef(null);
-  const orbsRef = useRef(null);
-  const portalRef = useRef(null);
   const portalCardRef = useRef(null);
-  const burstRef = useRef(null);
   const burstPosRef = useRef(null);
 
   const [activeFilter, setActiveFilter] = useState('all');
@@ -143,181 +143,9 @@ export default function Projects() {
   const selectedIndex = projects.findIndex((p) => p.id === selected);
   const selectedProject = selectedIndex >= 0 ? projects[selectedIndex] : null;
 
-  // Themed sling-ring portal - opens on card click with a burst at the card.
-  useGSAP(
-    () => {
-      const portal = portalRef.current;
-      if (!portal) return;
-      const hasReduced = prefersReducedMotion();
+  // Card grid: cursor tilt + magnet + colored spotlight (shared hook).
+  useTiltMagnet(gridRef, '.project-card', { tilt: 9, magnet: 12, lift: 4 });
 
-      if (selected == null) {
-        // Closing ripple from the last opened card, then collapse + spin away.
-        const burst = burstRef.current;
-        const pos = burstPosRef.current;
-        if (burst && pos && !hasReduced) {
-          gsap.set(burst, { x: pos.x, y: pos.y, scale: 0.35, opacity: 0.9 });
-          gsap.to(burst, {
-            scale: 1.6,
-            opacity: 0,
-            duration: 0.45,
-            ease: 'power2.out',
-            overwrite: 'auto',
-          });
-        }
-        gsap.set(portal, { visibility: 'visible' });
-        gsap.to(portal, {
-          scale: 0.25,
-          rotation: hasReduced ? 0 : 8,
-          opacity: 0,
-          duration: hasReduced ? 0.1 : 0.35,
-          ease: 'power2.in',
-          overwrite: 'auto',
-          onComplete: () => gsap.set(portal, { visibility: 'hidden', rotation: 0 }),
-        });
-        return;
-      }
-
-      gsap.set(portal, { visibility: 'visible' });
-
-      // Sling-ring flare at the clicked card, then the portal expands.
-      const burst = burstRef.current;
-      const pos = burstPosRef.current;
-      if (burst && pos) {
-        gsap.set(burst, { x: pos.x, y: pos.y, scale: 0.3, opacity: 1 });
-        gsap.to(burst, {
-          scale: 1.7,
-          opacity: 0,
-          duration: hasReduced ? 0.1 : 0.7,
-          ease: 'power2.out',
-          overwrite: 'auto',
-        });
-      }
-
-      gsap.fromTo(
-        portal,
-        { scale: 0.3, rotation: hasReduced ? 0 : -5, opacity: 0 },
-        {
-          scale: 1,
-          rotation: 0,
-          opacity: 1,
-          duration: hasReduced ? 0.2 : 0.6,
-          ease: 'back.out(1.6)',
-          overwrite: 'auto',
-        }
-      );
-
-      const card = portalCardRef.current;
-      if (card) {
-        gsap.fromTo(
-          card,
-          { y: 24, opacity: 0 },
-          {
-            y: 0,
-            opacity: 1,
-            duration: hasReduced ? 0.15 : 0.45,
-            delay: hasReduced ? 0 : 0.15,
-            ease: 'power3.out',
-            overwrite: 'auto',
-          }
-        );
-
-        // Kicker + title + description + features + tags + links stagger up.
-        const items = gsap.utils.toArray(
-          '.project-portal-card > :not(.project-portal-shimmer):not(.project-portal-close)',
-          card
-        );
-        if (items.length) {
-          gsap.fromTo(
-            items,
-            { y: 18, opacity: 0 },
-            {
-              y: 0,
-              opacity: 1,
-              duration: 0.4,
-              delay: hasReduced ? 0 : 0.32,
-              ease: 'power3.out',
-              stagger: 0.06,
-              overwrite: 'auto',
-            }
-          );
-        }
-
-        const shimmer = card.querySelector('.project-portal-shimmer');
-        if (shimmer && !hasReduced) {
-          gsap.fromTo(
-            shimmer,
-            { xPercent: -140 },
-            {
-              xPercent: 140,
-              duration: 1.15,
-              delay: 0.3,
-              ease: 'power2.inOut',
-              overwrite: 'auto',
-            }
-          );
-        }
-      }
-    },
-    { scope: sectionRef, dependencies: [selected] }
-  );
-
-  // Card grid: cursor tilt + magnet + colored spotlight.
-  useGSAP(
-    () => {
-      if (prefersReducedMotion()) return;
-      const grid = gridRef.current;
-      if (!grid) return;
-
-      const cards = gsap.utils.toArray('.project-card', grid);
-      if (!cards.length) return;
-
-      const cleanups = cards.map((card) => {
-        const tiltX = gsap.quickTo(card, 'rotationX', { duration: 0.5, ease: 'power3.out' });
-        const tiltY = gsap.quickTo(card, 'rotationY', { duration: 0.5, ease: 'power3.out' });
-        const moveX = gsap.quickTo(card, 'x', { duration: 0.45, ease: 'power3.out' });
-        const moveY = gsap.quickTo(card, 'y', { duration: 0.45, ease: 'power3.out' });
-        const spot = { x: 0, y: 0 };
-        const spotX = gsap.quickTo(spot, 'x', {
-          duration: 0.4,
-          ease: 'power3.out',
-          onUpdate: () => card.style.setProperty('--spot-x', `${spot.x}px`),
-        });
-        const spotY = gsap.quickTo(spot, 'y', {
-          duration: 0.4,
-          ease: 'power3.out',
-          onUpdate: () => card.style.setProperty('--spot-y', `${spot.y}px`),
-        });
-
-        const onMove = (e) => {
-          const rect = card.getBoundingClientRect();
-          const px = (e.clientX - rect.left) / rect.width - 0.5;
-          const py = (e.clientY - rect.top) / rect.height - 0.5;
-          tiltY(px * 9);
-          tiltX(py * -9);
-          moveX(px * 12);
-          moveY(py * 12 - 4); // slight lift while hovering
-          spotX(e.clientX - rect.left);
-          spotY(e.clientY - rect.top);
-        };
-        const onLeave = () => {
-          tiltX(0);
-          tiltY(0);
-          moveX(0);
-          moveY(0);
-        };
-
-        card.addEventListener('mousemove', onMove);
-        card.addEventListener('mouseleave', onLeave);
-        return () => {
-          card.removeEventListener('mousemove', onMove);
-          card.removeEventListener('mouseleave', onLeave);
-        };
-      });
-
-      return () => cleanups.forEach((cleanup) => cleanup());
-    },
-    { scope: gridRef }
-  );
 
   // Cinematic scroll: the grid scales forward into focus as the section
   // enters (STACK -> PROJECTS depth zoom), then the whole grid drifts
@@ -389,62 +217,12 @@ export default function Projects() {
     { scope: sectionRef }
   );
 
-  // Ambient orbs - each drifts on its own, and the set parallaxes with the mouse.
-  useGSAP(
-    () => {
-      if (prefersReducedMotion()) return;
-      if (!orbsRef.current) return;
 
-      const killDrifts = gsap.utils.toArray('.project-orb-core', orbsRef.current).map((orb, i) => {
-        const tween = gsap.to(orb, {
-          x: gsap.utils.random(-44, 44),
-          y: gsap.utils.random(-28, 28),
-          scale: gsap.utils.random(0.85, 1.15),
-          duration: gsap.utils.random(6, 10),
-          ease: 'sine.inOut',
-          yoyo: true,
-          repeat: -1,
-          delay: i * 0.5,
-        });
-        return () => tween.kill();
-      });
-
-      const wraps = gsap.utils.toArray('.project-orb', orbsRef.current);
-      const depths = [64, 40, 88];
-      const parallax = wraps.map((wrap, i) => {
-        const xTo = gsap.quickTo(wrap, 'x', { duration: 1.3, ease: 'power2.out' });
-        const yTo = gsap.quickTo(wrap, 'y', { duration: 1.3, ease: 'power2.out' });
-        return { xTo, yTo, depth: depths[i % depths.length] };
-      });
-
-      const section = sectionRef.current;
-      const onMouse = (e) => {
-        const r = section.getBoundingClientRect();
-        const nx = (e.clientX - r.left) / r.width - 0.5;
-        const ny = (e.clientY - r.top) / r.height - 0.5;
-        parallax.forEach((p) => {
-          p.xTo(nx * p.depth);
-          p.yTo(ny * p.depth);
-        });
-      };
-      section.addEventListener('mousemove', onMouse);
-
-      return () => {
-        killDrifts.forEach((kill) => kill());
-        section.removeEventListener('mousemove', onMouse);
-      };
-    },
-    { scope: sectionRef }
-  );
 
   return (
     <section id="projects" className="projects-section" ref={sectionRef}>
-      {/* Ambient orbs - drift + mouse parallax (GSAP) */}
-      <div className="projects-orbs" ref={orbsRef} aria-hidden="true">
-        <span className="project-orb project-orb--1"><span className="project-orb-core" /></span>
-        <span className="project-orb project-orb--2"><span className="project-orb-core" /></span>
-        <span className="project-orb project-orb--3"><span className="project-orb-core" /></span>
-      </div>
+      {/* Ambient orbs - drift + mouse parallax (shared component) */}
+      <AmbientOrbs wrapClass="projects-orbs" orbClass="project-orb" depths={[64, 40, 88]} />
 
       <div className="section-container">
         <div className="projects-header-wrap">
@@ -512,6 +290,16 @@ export default function Projects() {
               </div>
 
               <span className="project-visual">
+                {project.screenshot && (
+                  <img
+                    className="project-screenshot"
+                    src={project.screenshot}
+                    alt=""
+                    loading="lazy"
+                    aria-hidden="true"
+                    onError={(e) => { e.currentTarget.style.display = 'none'; }}
+                  />
+                )}
                 <span className="project-visual-inner" aria-hidden="true" />
                 <span className="project-emoji-float" aria-hidden="true">
                   <ProjectIcon name={project.icon} className="project-emoji" />
@@ -571,53 +359,20 @@ export default function Projects() {
         </div>
       </div>
 
-      {/* Themed Dr. Strange portal - opens when a project card is clicked.
-          Accent (--portal-accent) comes from the project's color. */}
-      <div
-        className="project-portal"
-        ref={portalRef}
-        role="dialog"
-        aria-modal="true"
-        aria-label={selectedProject ? `${selectedProject.title} details` : 'Project details'}
-        style={selectedProject ? { '--portal-accent': selectedProject.color } : undefined}
+      {/* Themed Dr. Strange portal - shared component; accent comes from the project's color. */}
+      <SlingRingPortal
+        baseClass="project-portal"
+        cardClass="project-portal-card"
+        open={selected}
+        accentColor={selectedProject ? selectedProject.color : undefined}
+        ariaLabel={selectedProject ? `${selectedProject.title} details` : 'Project details'}
+        onClose={closePortal}
+        cardRef={portalCardRef}
+        burstPosRef={burstPosRef}
+        animateChildren
       >
-        <div className="project-portal-backdrop" onClick={closePortal} aria-hidden="true" />
-        <span className="project-portal-burst" ref={burstRef} aria-hidden="true" />
-        <div className="project-portal-rig">
-          <span className="project-portal-fire" aria-hidden="true" />
-          <svg
-            className="project-portal-arcs"
-            viewBox="0 0 100 100"
-            aria-hidden="true"
-            focusable="false"
-          >
-            <circle
-              className="project-portal-arc project-portal-arc--1"
-              cx="50"
-              cy="50"
-              r="48"
-              pathLength={1}
-            />
-            <circle
-              className="project-portal-arc project-portal-arc--2"
-              cx="50"
-              cy="50"
-              r="43"
-              pathLength={1}
-            />
-            <circle
-              className="project-portal-arc project-portal-arc--3"
-              cx="50"
-              cy="50"
-              r="38"
-              pathLength={1}
-            />
-          </svg>
-          <span className="project-portal-ring project-portal-ring--outer" aria-hidden="true" />
-          <span className="project-portal-ring project-portal-ring--inner" aria-hidden="true" />
-          {selectedProject && (
-            <div className="project-portal-card" ref={portalCardRef}>
-              <span className="project-portal-shimmer" aria-hidden="true" />
+        {selectedProject && (
+          <>
               
               {/* In-Portal Stepper Navigation */}
               <div className="project-portal-nav">
@@ -693,10 +448,9 @@ export default function Projects() {
                   </a>
                 )}
               </div>
-            </div>
-          )}
-        </div>
-      </div>
+          </>
+        )}
+      </SlingRingPortal>
     </section>
   );
 }

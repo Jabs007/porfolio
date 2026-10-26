@@ -7,6 +7,9 @@ import { prefersReducedMotion } from '../utils/motion.js';
 import CharacterGuide from './CharacterGuide';
 import GitHubStats from './GitHubStats';
 import useFocusTrap from '../hooks/useFocusTrap';
+import SlingRingPortal from '../shared/SlingRingPortal';
+import AmbientOrbs from '../shared/AmbientOrbs';
+import useTiltMagnet from '../shared/useTiltMagnet';
 import './About.css';
 
 gsap.registerPlugin(useGSAP);
@@ -17,11 +20,9 @@ const ENTRY_SETS = { education, experience, certifications };
 export default function About() {
   const sectionRef = useRef(null);
   const gridRef = useRef(null);
-  const orbsRef = useRef(null);
-  const portalRef = useRef(null);
   const portalCardRef = useRef(null);
-  const burstRef = useRef(null);
   const burstPosRef = useRef(null);
+  const tiltGateRef = useRef(false);
 
   const [selected, setSelected] = useState(null); // aboutCards id or null
 
@@ -64,166 +65,24 @@ export default function About() {
     selected === 'cv' ? { ...cv, id: 'cv' } : aboutCards.find((c) => c.id === selected) || null;
   const selectedEntries = selected ? ENTRY_SETS[selected] : [];
 
-  // Dr. Strange sling-ring portal - opens on card click with a burst at the card.
-  useGSAP(
-    () => {
-      const portal = portalRef.current;
-      if (!portal) return;
-      const hasReduced = prefersReducedMotion();
+  // Dr. Strange sling-ring portal open/close animation is owned by the
+  // shared SlingRingPortal component (rendered below).
 
-      if (selected == null) {
-        // Closing ripple from the last opened card, then collapse + spin away.
-        const burst = burstRef.current;
-        const pos = burstPosRef.current;
-        if (burst && pos && !hasReduced) {
-          gsap.set(burst, { x: pos.x, y: pos.y, scale: 0.35, opacity: 0.9 });
-          gsap.to(burst, {
-            scale: 1.6,
-            opacity: 0,
-            duration: 0.45,
-            ease: 'power2.out',
-            overwrite: 'auto',
-          });
-        }
-        gsap.set(portal, { visibility: 'visible' });
-        gsap.to(portal, {
-          scale: 0.25,
-          rotation: hasReduced ? 0 : 8,
-          opacity: 0,
-          duration: hasReduced ? 0.1 : 0.35,
-          ease: 'power2.in',
-          overwrite: 'auto',
-          onComplete: () => gsap.set(portal, { visibility: 'hidden', rotation: 0 }),
-        });
-        return;
-      }
-
-      gsap.set(portal, { visibility: 'visible' });
-
-      // Sling-ring flare at the clicked card, then the portal expands.
-      const burst = burstRef.current;
-      const pos = burstPosRef.current;
-      if (burst && pos) {
-        gsap.set(burst, { x: pos.x, y: pos.y, scale: 0.3, opacity: 1 });
-        gsap.to(burst, {
-          scale: 1.7,
-          opacity: 0,
-          duration: hasReduced ? 0.1 : 0.7,
-          ease: 'power2.out',
-          overwrite: 'auto',
-        });
-      }
-
-      gsap.fromTo(
-        portal,
-        { scale: 0.3, rotation: hasReduced ? 0 : -5, opacity: 0 },
-        {
-          scale: 1,
-          rotation: 0,
-          opacity: 1,
-          duration: hasReduced ? 0.2 : 0.6,
-          ease: 'back.out(1.6)',
-          overwrite: 'auto',
-        }
-      );
-
-      const card = portalCardRef.current;
-      if (card) {
-        gsap.fromTo(
-          card,
-          { y: 24, opacity: 0 },
-          {
-            y: 0,
-            opacity: 1,
-            duration: hasReduced ? 0.15 : 0.45,
-            delay: hasReduced ? 0 : 0.15,
-            ease: 'power3.out',
-            overwrite: 'auto',
-          }
-        );
-
-        // Kicker slides in, list items stagger up, PDF frame fades in.
-        const kicker = card.querySelector('.about-portal-kicker');
-        if (kicker) {
-          gsap.fromTo(
-            kicker,
-            { x: -10, opacity: 0 },
-            {
-              x: 0,
-              opacity: 1,
-              duration: 0.4,
-              delay: hasReduced ? 0 : 0.2,
-              ease: 'power2.out',
-              overwrite: 'auto',
-            }
-          );
-        }
-        const items = gsap.utils.toArray('.about-portal-item', card);
-        if (items.length) {
-          gsap.fromTo(
-            items,
-            { y: 18, opacity: 0 },
-            {
-              y: 0,
-              opacity: 1,
-              duration: 0.4,
-              delay: hasReduced ? 0 : 0.32,
-              ease: 'power3.out',
-              stagger: 0.07,
-              overwrite: 'auto',
-            }
-          );
-        }
-        const frame = card.querySelector('.cv-frame');
-        if (frame) {
-          gsap.fromTo(
-            frame,
-            { y: 14, opacity: 0 },
-            {
-              y: 0,
-              opacity: 1,
-              duration: 0.45,
-              delay: hasReduced ? 0 : 0.25,
-              ease: 'power3.out',
-              overwrite: 'auto',
-            }
-          );
-        }
-        const shimmer = card.querySelector('.about-portal-shimmer');
-        if (shimmer && !hasReduced) {
-          gsap.fromTo(
-            shimmer,
-            { xPercent: -140 },
-            {
-              xPercent: 140,
-              duration: 1.15,
-              delay: 0.3,
-              ease: 'power2.inOut',
-              overwrite: 'auto',
-            }
-          );
-        }
-      }
-    },
-    { scope: sectionRef, dependencies: [selected] }
-  );
-
-  // Card grid: 3D staggered entrance, then cursor tilt + magnet + spotlight.
+  // Card grid: 3D staggered entrance. The cursor tilt/magnet/spotlight that
+  // used to live here is now the shared useTiltMagnet hook below, gated
+  // until the entrance has played so the two don't fight over transforms.
   useGSAP(
     () => {
       if (prefersReducedMotion()) return;
       const grid = gridRef.current;
       if (!grid) return;
 
-      const cards = gsap.utils.toArray('.about-card, .about-cv-card', grid);
       const entryTargets = gsap.utils.toArray(
         '.about-card, .about-cv-card, .about-cv-download',
         grid
       );
       const indexes = gsap.utils.toArray('.about-card-index, .about-cv-index', grid);
       if (!entryTargets.length) return;
-
-      let live = false;
 
       // --- Entrance choreography: cards unfold in from above with a spring ---
       const entrance = gsap.timeline({
@@ -233,10 +92,10 @@ export default function About() {
           toggleActions: 'play none none reverse',
         },
         onComplete: () => {
-          live = true;
+          tiltGateRef.current = true;
         },
         onReverseComplete: () => {
-          live = false;
+          tiltGateRef.current = false;
         },
       });
       entrance.fromTo(
@@ -259,104 +118,17 @@ export default function About() {
           0.35
         );
       }
-
-      // --- Tilt + magnet + cursor spotlight (active after the entrance) ---
-      const cleanups = cards.map((card) => {
-        const tiltX = gsap.quickTo(card, 'rotationX', { duration: 0.5, ease: 'power3.out' });
-        const tiltY = gsap.quickTo(card, 'rotationY', { duration: 0.5, ease: 'power3.out' });
-        const moveX = gsap.quickTo(card, 'x', { duration: 0.45, ease: 'power3.out' });
-        const moveY = gsap.quickTo(card, 'y', { duration: 0.45, ease: 'power3.out' });
-        const spot = { x: 0, y: 0 };
-        const spotX = gsap.quickTo(spot, 'x', {
-          duration: 0.4,
-          ease: 'power3.out',
-          onUpdate: () => card.style.setProperty('--spot-x', `${spot.x}px`),
-        });
-        const spotY = gsap.quickTo(spot, 'y', {
-          duration: 0.4,
-          ease: 'power3.out',
-          onUpdate: () => card.style.setProperty('--spot-y', `${spot.y}px`),
-        });
-
-        const onMove = (e) => {
-          if (!live) return;
-          const rect = card.getBoundingClientRect();
-          const px = (e.clientX - rect.left) / rect.width - 0.5;
-          const py = (e.clientY - rect.top) / rect.height - 0.5;
-          tiltY(px * 10);
-          tiltX(py * -10);
-          moveX(px * 14);
-          moveY(py * 14 - 4); // slight lift while hovering
-          spotX(e.clientX - rect.left);
-          spotY(e.clientY - rect.top);
-        };
-        const onLeave = () => {
-          tiltX(0);
-          tiltY(0);
-          moveX(0);
-          moveY(0);
-        };
-
-        card.addEventListener('mousemove', onMove);
-        card.addEventListener('mouseleave', onLeave);
-        return () => {
-          card.removeEventListener('mousemove', onMove);
-          card.removeEventListener('mouseleave', onLeave);
-        };
-      });
-
-      return () => cleanups.forEach((cleanup) => cleanup());
     },
     { scope: gridRef }
   );
 
-  // Ambient orbs - each drifts on its own, and the whole set parallaxes with the mouse.
-  useGSAP(
-    () => {
-      if (prefersReducedMotion()) return;
-      if (!orbsRef.current) return;
-
-      const killDrifts = gsap.utils.toArray('.about-orb-core', orbsRef.current).map((orb, i) => {
-        const tween = gsap.to(orb, {
-          x: gsap.utils.random(-44, 44),
-          y: gsap.utils.random(-28, 28),
-          scale: gsap.utils.random(0.85, 1.15),
-          duration: gsap.utils.random(6, 10),
-          ease: 'sine.inOut',
-          yoyo: true,
-          repeat: -1,
-          delay: i * 0.5,
-        });
-        return () => tween.kill();
-      });
-
-      const wraps = gsap.utils.toArray('.about-orb', orbsRef.current);
-      const depths = [70, 44, 96];
-      const parallax = wraps.map((wrap, i) => {
-        const xTo = gsap.quickTo(wrap, 'x', { duration: 1.3, ease: 'power2.out' });
-        const yTo = gsap.quickTo(wrap, 'y', { duration: 1.3, ease: 'power2.out' });
-        return { xTo, yTo, depth: depths[i % depths.length] };
-      });
-
-      const section = sectionRef.current;
-      const onMouse = (e) => {
-        const r = section.getBoundingClientRect();
-        const nx = (e.clientX - r.left) / r.width - 0.5;
-        const ny = (e.clientY - r.top) / r.height - 0.5;
-        parallax.forEach((p) => {
-          p.xTo(nx * p.depth);
-          p.yTo(ny * p.depth);
-        });
-      };
-      section.addEventListener('mousemove', onMouse);
-
-      return () => {
-        killDrifts.forEach((kill) => kill());
-        section.removeEventListener('mousemove', onMouse);
-      };
-    },
-    { scope: sectionRef }
-  );
+  // Cursor tilt + magnet + spotlight on cards (shared hook).
+  useTiltMagnet(gridRef, '.about-card, .about-cv-card', {
+    tilt: 10,
+    magnet: 14,
+    lift: 4,
+    liveRef: tiltGateRef,
+  });
 
   // Status dots in the highlights pulse with a random stagger.
   useGSAP(
@@ -381,12 +153,8 @@ export default function About() {
 
   return (
     <section id="about" className="about-section" ref={sectionRef}>
-      {/* Ambient orbs - drift + mouse parallax (GSAP) */}
-      <div className="about-orbs" ref={orbsRef} aria-hidden="true">
-        <span className="about-orb about-orb--1"><span className="about-orb-core" /></span>
-        <span className="about-orb about-orb--2"><span className="about-orb-core" /></span>
-        <span className="about-orb about-orb--3"><span className="about-orb-core" /></span>
-      </div>
+      {/* Ambient orbs - drift + mouse parallax (shared component) */}
+      <AmbientOrbs wrapClass="about-orbs" orbClass="about-orb" depths={[70, 44, 96]} />
 
       <div className="section-container">
         <div className="about-grid">
@@ -488,57 +256,20 @@ export default function About() {
         <GitHubStats />
       </div>
 
-      {/* Dr. Strange portal - opens when a card is clicked */}
-      <div
-        className="about-portal"
-        ref={portalRef}
-        role="dialog"
-        aria-modal="true"
-        aria-label={selectedCard ? `${selectedCard.title} details` : 'About details'}
-        style={selectedCard ? { '--portal-accent': selectedCard.accent } : undefined}
+      {/* Dr. Strange portal - shared component; accent comes from the card's color. */}
+      <SlingRingPortal
+        baseClass="about-portal"
+        cardClass={`about-portal-card ${selected === 'cv' ? 'about-portal-card--cv' : ''}`}
+        open={selected}
+        accentColor={selectedCard ? selectedCard.accent : undefined}
+        ariaLabel={selectedCard ? `${selectedCard.title} details` : 'About details'}
+        onClose={closePortal}
+        cardRef={portalCardRef}
+        burstPosRef={burstPosRef}
+        animateChildren
       >
-        <div className="about-portal-backdrop" onClick={closePortal} aria-hidden="true" />
-        <span className="about-portal-burst" ref={burstRef} aria-hidden="true" />
-        <div className="about-portal-rig">
-          <span className="about-portal-fire" aria-hidden="true" />
-          <svg
-            className="about-portal-arcs"
-            viewBox="0 0 100 100"
-            aria-hidden="true"
-            focusable="false"
-          >
-            <circle
-              className="about-portal-arc about-portal-arc--1"
-              cx="50"
-              cy="50"
-              r="48"
-              pathLength={1}
-            />
-            <circle
-              className="about-portal-arc about-portal-arc--2"
-              cx="50"
-              cy="50"
-              r="43"
-              pathLength={1}
-            />
-            <circle
-              className="about-portal-arc about-portal-arc--3"
-              cx="50"
-              cy="50"
-              r="38"
-              pathLength={1}
-            />
-          </svg>
-          <span className="about-portal-ring about-portal-ring--outer" aria-hidden="true" />
-          <span className="about-portal-ring about-portal-ring--inner" aria-hidden="true" />
-          {selectedCard && (
-            <div
-              className={`about-portal-card ${
-                selected === 'cv' ? 'about-portal-card--cv' : ''
-              }`}
-              ref={portalCardRef}
-            >
-              <span className="about-portal-shimmer" aria-hidden="true" />
+        {selectedCard && (
+          <>
               
               {/* In-Portal Category Navigation Tabs */}
               <div className="about-portal-nav">
@@ -628,10 +359,9 @@ export default function About() {
                   </span>
                 </>
               )}
-            </div>
-          )}
-        </div>
-      </div>
+          </>
+        )}
+      </SlingRingPortal>
     </section>
   );
 }

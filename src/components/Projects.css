@@ -259,6 +259,38 @@
   transform: scale(1.04);
 }
 
+/* Project visual */
+
+/* Real screenshot behind the glyph (renders only when the file exists in
+   public/screenshots/; onError hides the img and the glyph-only look stands) */
+.project-screenshot {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center top;
+  opacity: 0.16;
+  filter: saturate(0.85);
+  transition: opacity 0.5s var(--ease-in-out), filter 0.5s var(--ease-in-out);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.project-card:hover .project-screenshot,
+.project-card:focus-visible .project-screenshot {
+  opacity: 0.34;
+  filter: saturate(1);
+}
+
+/* Touch devices: no hover, so keep the screenshot slightly more present
+   instead of waiting for a hover state that never comes */
+@media (hover: none), (pointer: coarse) {
+  .project-screenshot {
+    opacity: 0.26;
+  }
+}
+
 .project-visual-inner {
   position: absolute;
   inset: 0;

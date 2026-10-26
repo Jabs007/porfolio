@@ -11,7 +11,7 @@ const HeroThree = lazy(() => import('./HeroThree'));
 
 gsap.registerPlugin(ScrollTrigger, useGSAP);
 
-const { title, tagline, availability } = hero;
+const { title, tagline, availability, character3d } = hero;
 
 export default function MainContainer() {
   const mainRef = useRef(null);
@@ -213,7 +213,19 @@ export default function MainContainer() {
 
             <div ref={cardRef} className="hero-visual">
               <Suspense fallback={null}>
-                <HeroThree wrapperRef={cardRef} />
+                {character3d?.enabled ? (
+                  <HeroThree wrapperRef={cardRef} />
+                ) : (
+                  /* 2D fallback: the character sheet rendered statically. The
+                     ~886 kB three.js/R3F chunk is never fetched while 3D is
+                     disabled in content.js. */
+                  <img
+                    className="hero-still"
+                    src="/hero-character.webp"
+                    alt="Adams Jabali"
+                    decoding="async"
+                  />
+                )}
               </Suspense>
             </div>
           </div>
