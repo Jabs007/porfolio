@@ -1,0 +1,13 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   SlingRingPortal chrome
+   The fire halo, arc rings and portal rings are CSS animations. Without this
+   they keep running in every section even while the portal is closed and
+   invisible (opacity 0), which wastes compositor work for nothing. The
+   component marks its root with data-open; closed chrome is paused.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+[data-open='false'] [class*='-portal-fire'],
+[data-open='false'] [class*='-portal-arc'],
+[data-open='false'] [class*='-portal-ring'] {
+  animation-play-state: paused;
+}

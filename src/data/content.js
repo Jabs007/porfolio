@@ -12,18 +12,14 @@ export const hero = {
     "I'm Adams Jabali, a Software Engineer & Data Scientist specializing in ML Engineering, scalable backend systems, and intelligent applications.",
   availability: 'Available for new opportunities',
   techstack: [
-    // First five form the inner core ring; the rest orbit outside.
-    // `involvement` powers the Dr. Strange portal card; `repos` link to real GitHub proof.
-    // New fields for dimensional portal system:
-    //   accent: color used during hover/active state
-    //   portalType: visual style when entered (black-hole, component-universe, data-vortex, etc.)
-    //   transition: entrance animation style when technology is clicked
+    // Rendered as the category board in TechStack (grouped by `category`).
+    // `involvement` and `repos` power the shared sling-ring portal; every entry
+    // uses the single site accent, so there is no per-tech `color`.
+    // `portalType` only selects which line glyph identifies the entry.
     {
       name: 'Python',
       category: 'Languages',
-      accent: '#636e72',
       portalType: 'data-vortex',
-      transition: 'particle-attraction',
       description: 'Core language for ML pipelines, automation, and backend services.',
       involvement: '6 public repos: Streamlit dashboards, ML recommenders, a loan-default model, and a chatbot.',
       repos: ['dashboard', 'group-4', 'loan-default-prediction', 'chatbot'],
@@ -31,9 +27,7 @@ export const hero = {
     {
       name: 'JavaScript',
       category: 'Languages',
-      accent: '#636e72',
       portalType: 'event-propagation',
-      transition: 'pulse-through-nodes',
       description: 'Drives interactive interfaces and full-stack application logic.',
       involvement: 'The engine behind every interactive surface: 7+ repos ship React frontends and Node tooling.',
       repos: ['B2C-SEGEMENTATION', 'eccom', 'jabali-porfolio'],
@@ -41,9 +35,7 @@ export const hero = {
     {
       name: 'React',
       category: 'Frontend',
-      accent: '#A78BFA',
       portalType: 'component-universe',
-      transition: 'component-split',
       description: 'Component-based library for fast, interactive user interfaces.',
       involvement: 'Frontend for the B2C segmentation platform, VendorHub e-commerce, and this portfolio.',
       repos: ['B2C-SEGEMENTATION', 'eccom', 'jabali-porfolio'],
@@ -51,9 +43,7 @@ export const hero = {
     {
       name: 'Node.js',
       category: 'Backend',
-      accent: '#A78BFA',
       portalType: 'data-vortex',
-      transition: 'pulse-through-nodes',
       description: 'High-performance JavaScript runtime for backend services and tooling.',
       involvement: 'Express + tRPC APIs powering the B2C platform and the VendorHub e-commerce backend.',
       repos: ['B2C-SEGEMENTATION', 'eccom'],
@@ -61,9 +51,7 @@ export const hero = {
     {
       name: 'SQL',
       category: 'Languages',
-      accent: '#636e72',
       portalType: 'data-vault',
-      transition: 'grid-implosion',
       description: 'Querying and modeling relational data with precision.',
       involvement: 'Relational modeling behind the B2C platform (HackerRank SQL certified).',
       repos: ['B2C-SEGEMENTATION'],
@@ -71,9 +59,7 @@ export const hero = {
     {
       name: 'TypeScript',
       category: 'Languages',
-      accent: '#A78BFA',
       portalType: 'component-universe',
-      transition: 'component-split',
       description: 'Typed JavaScript for safer, scalable frontend and backend code.',
       involvement: 'Primary language across 7 public repos: typed frontends, backends, and tooling.',
       repos: ['B2C-SEGEMENTATION', 'eccom', 'loan-ready', 'jabali-porfolio'],
@@ -81,25 +67,19 @@ export const hero = {
     {
       name: 'Flask',
       category: 'Backend',
-      accent: '#636e72',
       portalType: 'data-vortex',
-      transition: 'particle-attraction',
       description: 'Lightweight Python framework for rapid APIs and web services.',
     },
     {
       name: 'FastAPI',
       category: 'Backend',
-      accent: '#A78BFA',
       portalType: 'data-vortex',
-      transition: 'particle-attraction',
       description: 'Modern async Python framework for high-performance APIs.',
     },
     {
       name: 'TensorFlow',
       category: 'Data & ML',
-      accent: '#636e72',
       portalType: 'data-vault',
-      transition: 'grid-implosion',
       description: 'End-to-end framework for building and training machine learning models.',
       involvement: 'Model experiments behind career recommendation and loan-default prediction.',
       repos: ['AI-Career-Roadmap-Recommender', 'loan-default-prediction'],
@@ -107,9 +87,7 @@ export const hero = {
     {
       name: 'scikit-learn',
       category: 'Data & ML',
-      accent: '#A78BFA',
       portalType: 'data-vault',
-      transition: 'grid-implosion',
       description: 'Classic ML toolkit for modeling, clustering, and evaluation.',
       involvement: 'K-Means + RFM for B2C segmentation; collaborative filtering in the CF Recommender Lab.',
       repos: ['B2C-SEGEMENTATION', 'group-4'],
@@ -117,9 +95,7 @@ export const hero = {
     {
       name: 'PostgreSQL',
       category: 'Databases',
-      accent: '#A78BFA',
       portalType: 'black-hole',
-      transition: 'gravity-collapse',
       description: 'Relational database for robust, production-grade storage.',
       involvement: 'Production relational storage for the B2C segmentation platform.',
       repos: ['B2C-SEGEMENTATION'],
@@ -127,36 +103,28 @@ export const hero = {
     {
       name: 'MongoDB',
       category: 'Databases',
-      accent: '#636e72',
       portalType: 'data-vault',
-      transition: 'grid-implosion',
       description: 'Flexible NoSQL database for document-driven applications.',
       repos: ['eccom'],
     },
     {
       name: 'Docker',
       category: 'Cloud & DevOps',
-      accent: '#636e72',
       portalType: 'black-hole',
-      transition: 'gravity-collapse',
       description: 'Containerization for consistent, portable deployments.',
       involvement: 'Containerized builds keep every deployment portable and reproducible.',
     },
     {
       name: 'AWS',
       category: 'Cloud & DevOps',
-      accent: '#A78BFA',
       portalType: 'data-vault',
-      transition: 'grid-implosion',
       description: 'Cloud infrastructure, compute, and deployment services.',
       involvement: 'AWS Cloud Practitioner certified, covering cloud infrastructure and deployment.',
     },
     {
       name: 'Git',
       category: 'Cloud & DevOps',
-      accent: '#636e72',
       portalType: 'branching-timeline',
-      transition: 'timeline-split',
       description: 'Version control for collaborative, trackable development.',
       involvement: '19 public repos on GitHub, with every project branched, committed, and version-controlled.',
       repos: ['B2C-SEGEMENTATION', 'dashboard', 'eccom'],

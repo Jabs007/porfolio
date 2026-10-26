@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { gsap } from 'gsap';
 import { prefersReducedMotion } from '../utils/motion.js';
+import './SlingRingPortal.css';
 
 /**
  * SlingRingPortal - the shared Dr. Strange portal used by About, Projects
@@ -164,6 +165,7 @@ export default function SlingRingPortal({
     <div
       className={baseClass}
       ref={portalRef}
+      data-open={open != null}
       role="dialog"
       aria-modal="true"
       aria-label={ariaLabel}

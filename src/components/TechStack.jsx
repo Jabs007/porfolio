@@ -7,17 +7,16 @@ import { prefersReducedMotion } from '../utils/motion.js';
 import useFocusTrap from '../hooks/useFocusTrap';
 import SlingRingPortal from '../shared/SlingRingPortal';
 import AmbientOrbs from '../shared/AmbientOrbs';
-import useTiltMagnet from '../shared/useTiltMagnet';
 import './TechStack.css';
 
-gsap.registerPlugin(ScrollTrigger);
+gsap.registerPlugin(ScrollTrigger, useGSAP);
 
 const { techstack } = hero;
 
-// Group tech by category for the filter bar
-const CATEGORIES = ['All', ...Array.from(new Set(techstack.map((t) => t.category)))];
+// Every category present in the data, in first-seen order.
+const CATEGORIES = Array.from(new Set(techstack.map((t) => t.category)));
 
-// SVG glyphs per portalType - stroke-based, 20x20 viewBox, colored via currentColor
+// SVG glyphs per portalType - stroke-based, 20x20 viewBox, colored via currentColor.
 const PORTAL_GLYPHS = {
   'data-vortex': (
     <>
@@ -85,17 +84,24 @@ function TechGlyph({ portalType, className }) {
 
 export default function TechStack() {
   const sectionRef = useRef(null);
-  const gridRef = useRef(null);
+  const boardRef = useRef(null);
   const portalCardRef = useRef(null);
   const burstPosRef = useRef(null);
-  const sigil1Ref = useRef(null);
 
   const [activeCategory, setActiveCategory] = useState('All');
-  const [selected, setSelected] = useState(null); // tech name
+  const [selected, setSelected] = useState(null); // tech name or null
 
   const closePortal = useCallback(() => setSelected(null), []);
 
   useFocusTrap(selected !== null, portalCardRef, closePortal);
+
+  // Groups for the board: one per category, filtered by the active tab.
+  const groups = CATEGORIES.filter(
+    (category) => activeCategory === 'All' || category === activeCategory
+  ).map((category) => ({
+    category,
+    items: techstack.filter((tech) => tech.category === category),
+  }));
 
   const handleSelect = useCallback(
     (name, e) => {
@@ -124,143 +130,121 @@ export default function TechStack() {
   }, [selected]);
 
   const selectedTech = techstack.find((t) => t.name === selected) || null;
-  const filteredTech = activeCategory === 'All'
-    ? techstack
-    : techstack.filter((t) => t.category === activeCategory);
 
-  // Portal open / close is owned by the shared SlingRingPortal component
-  // (rendered below); it replays on every `selected` change exactly like the
-  // previous per-section implementation.
-
-  // Scroll reveal: scale-in + stagger batch for tech orbs
+  // Entries rise as one wave the first time the board enters view; re-runs on
+  // filter change so a new set arrives with the same rhythm. Transform +
+  // opacity only - no blur, no per-item loops.
   useGSAP(
     () => {
       if (prefersReducedMotion()) return;
-      const grid = gridRef.current;
-      if (!grid) return;
+      const entries = gsap.utils.toArray('.ts-entry', boardRef.current);
+      if (!entries.length) return;
 
       gsap.fromTo(
-        grid,
-        { scale: 0.94, opacity: 0.4, filter: 'blur(6px)' },
+        entries,
+        { y: 14, opacity: 0 },
         {
-          scale: 1,
+          y: 0,
           opacity: 1,
-          filter: 'blur(0px)',
-          ease: 'none',
-          scrollTrigger: { trigger: sectionRef.current, start: 'top 90%', end: 'top 50%', scrub: 0.5 },
+          duration: 0.45,
+          ease: 'power3.out',
+          stagger: 0.035,
+          scrollTrigger: { trigger: boardRef.current, start: 'top 88%', once: true },
         }
       );
-
-      ScrollTrigger.batch('.ts-orb', {
-        onEnter: (els) => gsap.fromTo(els, { y: 32, opacity: 0, scale: 0.85 }, { y: 0, opacity: 1, scale: 1, duration: 0.6, stagger: 0.06, ease: 'back.out(1.7)', overwrite: 'auto' }),
-        start: 'top 88%',
-        once: true,
-      });
     },
-    { scope: sectionRef }
+    { scope: sectionRef, dependencies: [activeCategory] }
   );
-
-  // 3D tilt + spotlight on each orb (shared hook; re-runs when the filter changes)
-  useTiltMagnet(gridRef, '.ts-orb', {
-    tilt: 14,
-    magnet: 0,
-    lift: 0,
-    deps: [filteredTech.length],
-  });
-
-  // Ambient orb drift + mouse parallax are owned by the shared AmbientOrbs
-  // component (rendered below).
 
   return (
     <section id="techstack" className="ts-section" ref={sectionRef}>
-      {/* Background ambient orbs (shared component) */}
+      {/* Ambient orbs - drift + mouse parallax (shared component) */}
       <AmbientOrbs wrapClass="ts-bg-orbs" orbClass="ts-bg-orb" depths={[72, 48, 96]} />
 
-      {/* Decorative background sigil rings */}
-      <div className="ts-sigil-wrap" aria-hidden="true">
-        <svg className="ts-sigil" viewBox="0 0 200 200" ref={sigil1Ref}>
-          <circle className="ts-sigil-ring ts-sigil-ring--1" cx="100" cy="100" r="95" pathLength={1} />
-          <circle className="ts-sigil-ring ts-sigil-ring--2" cx="100" cy="100" r="80" pathLength={1} />
-          <circle className="ts-sigil-ring ts-sigil-ring--3" cx="100" cy="100" r="65" pathLength={1} />
-          <circle className="ts-sigil-ring ts-sigil-ring--4" cx="100" cy="100" r="50" pathLength={1} />
-        </svg>
-      </div>
-
       <div className="section-container">
-        {/* Header */}
-        <div className="ts-header" data-reveal="left">
-          <span className="section-label">CONJURED DISCIPLINES</span>
-          <h2 className="ts-title-main">
+        <header className="ts-header">
+          <span className="section-label" data-reveal="left">
+            CONJURED DISCIPLINES
+          </span>
+          <h2 className="ts-title" data-reveal="up" data-reveal-delay="0.08">
             TECH <span className="ts-title-accent">STACK</span>
           </h2>
-          <p className="ts-sublabel" data-reveal="up" data-reveal-delay="0.1">
+          <p className="ts-sublabel" data-reveal="up" data-reveal-delay="0.14">
             Every tool is a spell. These are the ones I've mastered.
           </p>
-        </div>
+        </header>
 
-        {/* Category filter pills */}
-        <div className="ts-filter-bar" data-reveal="up" data-reveal-delay="0.18">
-          {CATEGORIES.map((cat) => {
-            const count = cat === 'All' ? techstack.length : techstack.filter((t) => t.category === cat).length;
+        {/* Category filter - text tabs on one rule */}
+        <div
+          className="ts-filter"
+          role="group"
+          aria-label="Filter technologies by category"
+          data-reveal="up"
+          data-reveal-delay="0.18"
+        >
+          {['All', ...CATEGORIES].map((category) => {
+            const count =
+              category === 'All'
+                ? techstack.length
+                : techstack.filter((t) => t.category === category).length;
+            const isActive = activeCategory === category;
             return (
               <button
-                key={cat}
+                key={category}
                 type="button"
-                className={`ts-filter-pill ${activeCategory === cat ? 'ts-filter-pill--active' : ''}`}
-                onClick={() => setActiveCategory(cat)}
+                className={`ts-filter-btn ${isActive ? 'ts-filter-btn--active' : ''}`}
+                onClick={() => setActiveCategory(category)}
+                aria-pressed={isActive}
               >
-                {cat}
-                <span className="ts-filter-count">({String(count).padStart(2, '0')})</span>
+                {category}
+                <span className="ts-filter-count">{String(count).padStart(2, '0')}</span>
               </button>
             );
           })}
         </div>
 
-        {/* Tech orb grid */}
-        <div className="ts-grid" ref={gridRef}>
-          {filteredTech.map((tech) => (
-            <button
-              key={tech.name}
-              type="button"
-              className={`ts-orb ${selected === tech.name ? 'ts-orb--selected' : ''}`}
-              style={{ '--orb-accent': tech.accent }}
-              onClick={(e) => handleSelect(tech.name, e)}
-              aria-expanded={selected === tech.name}
-              aria-label={`${tech.name}, ${tech.category}. Open portal for details.`}
-            >
-              {/* Inner glow core */}
-              <span className="ts-orb-core" aria-hidden="true" />
+        {/* Board: category groups flowing in columns */}
+        <div className="ts-board" ref={boardRef}>
+          {groups.map((group) => (
+            <section className="ts-group" key={group.category} aria-label={group.category}>
+              <h3 className="ts-group-title">
+                <span>{group.category}</span>
+                <span className="ts-group-count">{String(group.items.length).padStart(2, '0')}</span>
+              </h3>
 
-              {/* Spinning arc rings */}
-              <svg className="ts-orb-arcs" viewBox="0 0 100 100" aria-hidden="true">
-                <circle className="ts-orb-arc ts-orb-arc--1" cx="50" cy="50" r="46" pathLength={1} />
-                <circle className="ts-orb-arc ts-orb-arc--2" cx="50" cy="50" r="38" pathLength={1} />
-                <circle className="ts-orb-arc ts-orb-arc--3" cx="50" cy="50" r="30" pathLength={1} />
-              </svg>
-
-              {/* Cursor spotlight */}
-              <span className="ts-orb-spotlight" aria-hidden="true" />
-
-              {/* Content */}
-              <span className="ts-orb-inner">
-                <TechGlyph portalType={tech.portalType} className="ts-orb-glyph" />
-                <span className="ts-orb-name">{tech.name}</span>
-                <span className="ts-orb-cat">{tech.category}</span>
-              </span>
-
-              <span className="ts-orb-shine" aria-hidden="true" />
-            </button>
+              <ul className="ts-list">
+                {group.items.map((tech) => (
+                  <li className="ts-item" key={tech.name}>
+                    <button
+                      type="button"
+                      className={`ts-entry ${selected === tech.name ? 'ts-entry--active' : ''}`}
+                      onClick={(e) => handleSelect(tech.name, e)}
+                      aria-expanded={selected === tech.name}
+                      aria-label={`${tech.name}, ${tech.category}. Open details.`}
+                    >
+                      <TechGlyph portalType={tech.portalType} className="ts-entry-glyph" />
+                      <span className="ts-entry-name">{tech.name}</span>
+                      <span className="ts-entry-mark" aria-hidden="true">
+                        <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.5">
+                          <line x1="4" y1="16" x2="16" y2="4" />
+                          <polyline points="8 4 16 4 16 12" />
+                        </svg>
+                      </span>
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            </section>
           ))}
         </div>
       </div>
 
-      {/* Dr. Strange portal - shared component; accent from the tech's color. */}
+      {/* Sling-ring portal - shared chrome, single bronze accent. */}
       <SlingRingPortal
         baseClass="ts-portal"
         cardClass="ts-portal-card"
         open={selected}
-        accentColor={selectedTech ? selectedTech.accent : undefined}
-        ariaLabel={selectedTech ? `${selectedTech.name} details` : 'Tech details'}
+        ariaLabel={selectedTech ? `${selectedTech.name} details` : 'Technology details'}
         onClose={closePortal}
         cardRef={portalCardRef}
         burstPosRef={burstPosRef}
@@ -268,58 +252,53 @@ export default function TechStack() {
       >
         {selectedTech && (
           <>
+            <button type="button" className="ts-portal-close" onClick={closePortal} aria-label="Close portal">
+              ESC{' '}
+              <svg className="ts-portal-close-icon" viewBox="0 0 20 20" aria-hidden="true">
+                <line x1="3" y1="3" x2="17" y2="17" />
+                <line x1="3" y1="17" x2="17" y2="3" />
+              </svg>
+            </button>
 
-              {/* Close */}
-              <button type="button" className="ts-portal-close" onClick={closePortal} aria-label="Close portal">
-                ESC <svg className="ts-portal-close-icon" viewBox="0 0 20 20" aria-hidden="true"><line x1="1" y1="1" x2="19" y2="19"/><line x1="1" y2="19" x2="19" y1="1"/></svg>
-              </button>
+            <div className="ts-portal-header">
+              <TechGlyph portalType={selectedTech.portalType} className="ts-portal-glyph" />
+              <div>
+                <span className="ts-portal-kicker">{selectedTech.category}</span>
+                <h3 className="ts-portal-title">{selectedTech.name}</h3>
+              </div>
+            </div>
 
-              {/* Tech glyph + header */}
-              <div className="ts-portal-header">
-                <TechGlyph portalType={selectedTech.portalType} className="ts-portal-glyph" />
-                <div>
-                  <span className="ts-portal-kicker">{selectedTech.category}</span>
-                  <h3 className="ts-portal-title">{selectedTech.name}</h3>
+            <p className="ts-portal-desc">{selectedTech.description}</p>
+
+            {selectedTech.involvement && (
+              <>
+                <div className="ts-portal-section-label">Where it's used</div>
+                <p className="ts-portal-involvement">{selectedTech.involvement}</p>
+              </>
+            )}
+
+            {selectedTech.repos?.length > 0 && (
+              <>
+                <div className="ts-portal-section-label">Repositories</div>
+                <div className="ts-portal-repos">
+                  {selectedTech.repos.map((repo) => (
+                    <a
+                      key={repo}
+                      className="ts-portal-repo-link"
+                      href={`https://github.com/Jabs007/${repo}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      {repo}
+                      <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true">
+                        <line x1="4" y1="16" x2="16" y2="4" />
+                        <polyline points="8 4 16 4 16 12" />
+                      </svg>
+                    </a>
+                  ))}
                 </div>
-              </div>
-
-              <p className="ts-portal-desc">{selectedTech.description}</p>
-
-              {selectedTech.involvement && (
-                <>
-                  <div className="ts-portal-section-label">REAL-WORLD INVOLVEMENT</div>
-                  <p className="ts-portal-involvement">{selectedTech.involvement}</p>
-                </>
-              )}
-
-              {selectedTech.repos && selectedTech.repos.length > 0 && (
-                <>
-                  <div className="ts-portal-section-label">LINKED REPOSITORIES</div>
-                  <div className="ts-portal-repos">
-                    {selectedTech.repos.map((repo) => (
-                      <a
-                        key={repo}
-                        className="ts-portal-repo-link"
-                        href={`https://github.com/Jabs007/${repo}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        {repo} <span aria-hidden="true" className="ts-repo-arrow">
-  <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round">
-    <line x1="5" y1="12" x2="15" y2="12"/>
-    <polyline points="12 5 19 12 12 19"/>
-  </svg>
-</span>
-                      </a>
-                    ))}
-                  </div>
-                </>
-              )}
-
-              <div className="ts-portal-portal-type">
-                <span className="ts-portal-section-label">PORTAL TYPE</span>
-                <span className="ts-portal-type-badge">{selectedTech.portalType?.replace(/-/g, ' ')}</span>
-              </div>
+              </>
+            )}
           </>
         )}
       </SlingRingPortal>
