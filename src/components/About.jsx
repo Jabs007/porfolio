@@ -1,7 +1,16 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { gsap } from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useGSAP } from '@gsap/react';
-import { about, aboutCards, cv, education, experience, certifications } from '../data/content.js';
+import {
+  about,
+  aboutCards,
+  cv,
+  education,
+  experience,
+  certifications,
+  skills,
+} from '../data/content.js';
 import cvPdf from '../../cv/CV.pdf';
 import { prefersReducedMotion } from '../utils/motion.js';
 import CharacterGuide from './CharacterGuide';
@@ -9,30 +18,42 @@ import GitHubStats from './GitHubStats';
 import useFocusTrap from '../hooks/useFocusTrap';
 import SlingRingPortal from '../shared/SlingRingPortal';
 import AmbientOrbs from '../shared/AmbientOrbs';
-import useTiltMagnet from '../shared/useTiltMagnet';
 import './About.css';
 
-gsap.registerPlugin(useGSAP);
+gsap.registerPlugin(ScrollTrigger, useGSAP);
 
 // Card id -> the entry list its portal renders (edit data/content.js to swap content).
 const ENTRY_SETS = { education, experience, certifications };
 
+// The CV sits in the same numbered index as the three credential portals.
+const CV_ROW = { ...cv, id: 'cv' };
+const INDEX_ROWS = [...aboutCards, CV_ROW];
+const PORTAL_TABS = [...aboutCards, { id: 'cv', title: 'Curriculum Vitae', index: cv.index, accent: cv.accent }];
+
+// Static CV summary - drawn from the same content data the sections use, so
+// the portal preview can never drift out of sync with the rest of the page.
+const CV_SUMMARY = {
+  education: education[0],
+  experience: experience[0],
+  certCount: certifications.length,
+  issuers: [...new Set(certifications.map((c) => c.issuer))].join(' · '),
+  stack: skills.slice(0, 10),
+};
+
 export default function About() {
   const sectionRef = useRef(null);
-  const gridRef = useRef(null);
   const portalCardRef = useRef(null);
   const burstPosRef = useRef(null);
-  const tiltGateRef = useRef(false);
 
-  const [selected, setSelected] = useState(null); // aboutCards id or null
+  const [selected, setSelected] = useState(null); // aboutCards id | 'cv' | null
 
   const closePortal = useCallback(() => setSelected(null), []);
 
   useFocusTrap(selected !== null, portalCardRef, closePortal);
 
-  // Clicking a card opens the portal from the card's position (sling-ring style).
-  // The last burst position is kept so the closing ripple can originate from
-  // the same card.
+  // Clicking an index row opens the portal from that row's position
+  // (sling-ring style). The last burst position is kept so the closing ripple
+  // originates from the same row.
   const handleSelect = useCallback(
     (id, e) => {
       const next = selected === id ? null : id;
@@ -60,94 +81,31 @@ export default function About() {
     return () => window.removeEventListener('keydown', onKey);
   }, [selected]);
 
-  // The CV banner card isn't part of the ENTRY_SETS list - it gets its own
-  // portal view (embedded PDF) instead of an entry list.
   const selectedCard =
-    selected === 'cv' ? { ...cv, id: 'cv' } : aboutCards.find((c) => c.id === selected) || null;
+    selected === 'cv' ? CV_ROW : aboutCards.find((c) => c.id === selected) || null;
   const selectedEntries = selected ? ENTRY_SETS[selected] : [];
 
-  // Dr. Strange sling-ring portal open/close animation is owned by the
-  // shared SlingRingPortal component (rendered below).
-
-  // Card grid: 3D staggered entrance. The cursor tilt/magnet/spotlight that
-  // used to live here is now the shared useTiltMagnet hook below, gated
-  // until the entrance has played so the two don't fight over transforms.
+  // Index rows rise as one wave the first time they enter the viewport.
+  // Nothing else in the section animates on scroll - the rail and bio use the
+  // site-wide data-reveal.
   useGSAP(
     () => {
       if (prefersReducedMotion()) return;
-      const grid = gridRef.current;
-      if (!grid) return;
+      const rows = gsap.utils.toArray('.about-index-item');
+      if (!rows.length) return;
 
-      const entryTargets = gsap.utils.toArray(
-        '.about-card, .about-cv-card, .about-cv-download',
-        grid
-      );
-      const indexes = gsap.utils.toArray('.about-card-index, .about-cv-index', grid);
-      if (!entryTargets.length) return;
-
-      // --- Entrance choreography: cards unfold in from above with a spring ---
-      const entrance = gsap.timeline({
-        scrollTrigger: {
-          trigger: grid,
-          start: 'top 82%',
-          toggleActions: 'play none none reverse',
-        },
-        onComplete: () => {
-          tiltGateRef.current = true;
-        },
-        onReverseComplete: () => {
-          tiltGateRef.current = false;
-        },
-      });
-      entrance.fromTo(
-        entryTargets,
-        { y: 90, rotationX: -16, opacity: 0, transformOrigin: '50% 0%' },
+      gsap.fromTo(
+        rows,
+        { y: 20, opacity: 0 },
         {
           y: 0,
-          rotationX: 0,
           opacity: 1,
-          duration: 0.95,
-          ease: 'back.out(1.2)',
-          stagger: 0.11,
+          duration: 0.55,
+          ease: 'power3.out',
+          stagger: 0.06,
+          scrollTrigger: { trigger: '.about-index', start: 'top 88%', once: true },
         }
       );
-      if (indexes.length) {
-        entrance.fromTo(
-          indexes,
-          { x: -14, opacity: 0 },
-          { x: 0, opacity: 1, duration: 0.5, ease: 'back.out(1.8)', stagger: 0.1 },
-          0.35
-        );
-      }
-    },
-    { scope: gridRef }
-  );
-
-  // Cursor tilt + magnet + spotlight on cards (shared hook).
-  useTiltMagnet(gridRef, '.about-card, .about-cv-card', {
-    tilt: 10,
-    magnet: 14,
-    lift: 4,
-    liveRef: tiltGateRef,
-  });
-
-  // Status dots in the highlights pulse with a random stagger.
-  useGSAP(
-    () => {
-      if (prefersReducedMotion()) return;
-      const dots = gsap.utils.toArray('.highlight-dot', sectionRef.current);
-      if (!dots.length) return;
-      const tween = gsap.to(dots, {
-        scale: 1.5,
-        opacity: 0.55,
-        duration: () => gsap.utils.random(0.9, 1.6),
-        ease: 'sine.inOut',
-        yoyo: true,
-        repeat: -1,
-        stagger: { each: 0.35, from: 'random' },
-        delay: 0.8,
-      });
-      return () => tween.kill();
     },
     { scope: sectionRef }
   );
@@ -159,105 +117,103 @@ export default function About() {
 
       <div className="section-container">
         <div className="about-grid">
-          <div className="about-left">
+          {/* ── Rail: identity + facts ─────────────────────────────────── */}
+          <aside className="about-rail">
             <h2 className="section-label" data-reveal="left">
               ABOUT
             </h2>
-            <h3 className="about-heading" data-reveal="up" data-reveal-delay="0.1">
+            <h3 className="about-heading" data-reveal="up" data-reveal-delay="0.08">
               {about.heading[0]}
               <br />
               <span className="about-accent">{about.heading[1]}</span>
             </h3>
-            <CharacterGuide
-              src="/characters/character-about.png"
-              alt="Adams Jabali coding on laptop"
-              hint="Engineering Intelligent Systems"
-              direction="left"
-              triggerRef={sectionRef}
-              size="md"
-              className="about-guide-embed"
-            />
-          </div>
-          <div className="about-right">
-            {about.bio.map((para, i) => (
-              <p
-                key={para}
-                className="about-text"
-                data-reveal="up"
-                data-reveal-delay={String(0.15 + i * 0.1)}
-              >
-                {para}
-              </p>
-            ))}
-            <div className="about-highlights" data-reveal="up" data-reveal-delay="0.45">
+
+            <dl className="about-meta" data-reveal="up" data-reveal-delay="0.2">
               {about.highlights.map((h) => (
-                <div className="highlight-item" key={h.label}>
-                  <div className="highlight-top">
-                    <span className="highlight-dot" aria-hidden="true" />
-                    <span className="highlight-label">{h.label}</span>
-                  </div>
-                  <span className="highlight-value">{h.value}</span>
+                <div className="about-meta-row" key={h.label}>
+                  <dt>{h.label}</dt>
+                  <dd>{h.value}</dd>
                 </div>
               ))}
+            </dl>
+          </aside>
+
+          {/* ── Main: bio + numbered index ─────────────────────────────── */}
+          <div className="about-main">
+            <div className="about-bio">
+              {/* Portrait inset beside the bio - keeps the rail short enough
+                  to actually be sticky. */}
+              <CharacterGuide
+                src="/characters/character-about.png"
+                alt="Adams Jabali coding on laptop"
+                hint="Engineering Intelligent Systems"
+                direction="left"
+                triggerRef={sectionRef}
+                size="sm"
+                className="about-guide-inline"
+              />
+
+              {about.bio.map((para, i) => (
+                <p
+                  key={para}
+                  className={`about-text${i === 0 ? ' about-text--lead' : ''}`}
+                  data-reveal="up"
+                  data-reveal-delay={String(0.12 + i * 0.08)}
+                >
+                  {para}
+                </p>
+              ))}
             </div>
+
+            <ol className="about-index" aria-label="Credentials and CV">
+              {INDEX_ROWS.map((row) => {
+                const isCv = row.id === 'cv';
+                return (
+                  <li className="about-index-item" key={row.id}>
+                    <button
+                      type="button"
+                      className={`about-row ${selected === row.id ? 'about-row--active' : ''}`}
+                      style={{ '--row-accent': row.accent }}
+                      onClick={(e) => handleSelect(row.id, e)}
+                      aria-expanded={selected === row.id}
+                      aria-label={`${row.title}: ${row.summary} ${
+                        isCv ? 'Open the CV preview.' : 'Open the portal.'
+                      }`}
+                    >
+                      <span className="about-row-index" aria-hidden="true">
+                        {row.index}
+                      </span>
+                      <span className="about-row-body">
+                        <span className="about-row-title">{row.title}</span>
+                        <span className="about-row-summary">{row.summary}</span>
+                      </span>
+                      <span className="about-row-action" aria-hidden="true">
+                        {isCv ? 'Preview' : 'Open'}
+                        <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.5">
+                          <line x1="3" y1="10" x2="16" y2="10" />
+                          <polyline points="11 5 16 10 11 15" />
+                        </svg>
+                      </span>
+                    </button>
+                  </li>
+                );
+              })}
+            </ol>
+
+            <p className="about-index-foot">
+              <span className="about-index-foot-label">Prefer the document?</span>
+              <a className="about-index-download" href={cvPdf} download={cv.downloadName}>
+                Download CV <span aria-hidden="true">↓</span>
+              </a>
+            </p>
+
+            {/* Live GitHub ledger */}
+            <GitHubStats />
           </div>
         </div>
-
-        {/* Portal cards - Education / Experience / Certifications + CV banner.
-            Entrance + tilt are GSAP-driven (see the grid useGSAP above). */}
-        <div className="about-cards-block" ref={gridRef}>
-          <div className="about-cards">
-            {aboutCards.map((card) => (
-              <button
-                key={card.id}
-                type="button"
-                className={`about-card ${selected === card.id ? 'about-card--selected' : ''}`}
-                style={{ '--card-accent': card.accent }}
-                onClick={(e) => handleSelect(card.id, e)}
-                aria-expanded={selected === card.id}
-                aria-label={`${card.title}, ${card.summary}. Click to open the portal.`}
-              >
-                <span className="about-card-index">{card.index}</span>
-                <span className="about-card-title">{card.title}</span>
-                <p className="about-card-summary">{card.summary}</p>
-                <span className="about-card-hint">
-                  Open portal <span aria-hidden="true">→</span>
-                </span>
-              </button>
-            ))}
-          </div>
-
-          {/* CV / Resume - wide banner with a one-click download, plus the
-              same sling-ring portal (embedded PDF viewer) on click */}
-          <div className="about-cv-row">
-            <button
-              type="button"
-              className={`about-cv-card ${selected === 'cv' ? 'about-cv-card--selected' : ''}`}
-              style={{ '--card-accent': cv.accent }}
-              onClick={(e) => handleSelect('cv', e)}
-              aria-expanded={selected === 'cv'}
-              aria-label={`${cv.title}, ${cv.summary} Click to open the portal.`}
-            >
-              <span className="about-cv-index">{cv.index}</span>
-              <span className="about-cv-body">
-                <span className="about-cv-title">{cv.title}</span>
-                <span className="about-cv-summary">{cv.summary}</span>
-              </span>
-              <span className="about-cv-hint">
-                Open portal <span aria-hidden="true">→</span>
-              </span>
-            </button>
-            <a className="about-cv-download" href={cvPdf} download={cv.downloadName}>
-              <span aria-hidden="true">↓</span> Download PDF
-            </a>
-          </div>
-        </div>
-
-        {/* Live GitHub stats and language distribution */}
-        <GitHubStats />
       </div>
 
-      {/* Dr. Strange portal - shared component; accent comes from the card's color. */}
+      {/* Dr. Strange portal - shared component; accent comes from the row's color. */}
       <SlingRingPortal
         baseClass="about-portal"
         cardClass={`about-portal-card ${selected === 'cv' ? 'about-portal-card--cv' : ''}`}
@@ -271,95 +227,116 @@ export default function About() {
       >
         {selectedCard && (
           <>
-              
-              {/* In-Portal Category Navigation Tabs */}
-              <div className="about-portal-nav">
-                <div className="about-portal-tabs">
-                  {[...aboutCards, { id: 'cv', title: 'Curriculum Vitae', index: '04', accent: '#6ee7b7' }].map((tab) => (
-                    <button
-                      key={tab.id}
-                      type="button"
-                      className={`about-portal-tab-btn ${selected === tab.id ? 'about-portal-tab-btn--active' : ''}`}
-                      onClick={() => setSelected(tab.id)}
-                    >
-                      {tab.title}
-                    </button>
-                  ))}
-                </div>
-                <button
-                  type="button"
-                  className="about-portal-close-pill"
-                  onClick={closePortal}
-                  aria-label="Close portal"
-                >
-                  ESC <span aria-hidden="true">✕</span>
-                </button>
+            {/* In-portal navigation between credentials */}
+            <div className="about-portal-nav">
+              <div className="about-portal-tabs">
+                {PORTAL_TABS.map((tab) => (
+                  <button
+                    key={tab.id}
+                    type="button"
+                    className={`about-portal-tab-btn ${
+                      selected === tab.id ? 'about-portal-tab-btn--active' : ''
+                    }`}
+                    onClick={() => setSelected(tab.id)}
+                  >
+                    {tab.title}
+                  </button>
+                ))}
               </div>
+              <button
+                type="button"
+                className="about-portal-close-pill"
+                onClick={closePortal}
+                aria-label="Close portal"
+              >
+                ESC <span aria-hidden="true">✕</span>
+              </button>
+            </div>
 
-              <div className="about-portal-header">
-                <span className="about-portal-kicker" style={{ color: selectedCard.accent }}>
-                  CREDENTIALS &amp; QUALIFICATIONS · {selectedCard.index}
-                </span>
-                <h3 className="about-portal-title">{selectedCard.title}</h3>
-              </div>
+            <div className="about-portal-header">
+              <span className="about-portal-kicker">
+                CREDENTIALS &amp; QUALIFICATIONS · {selectedCard.index}
+              </span>
+              <h3 className="about-portal-title">{selectedCard.title}</h3>
+            </div>
 
-              {selected === 'cv' ? (
-                <div className="cv-viewer">
-                  <iframe
-                    className="cv-frame"
-                    src={cvPdf}
-                    title="Adams Jabali, Curriculum Vitae"
-                    loading="lazy"
-                  />
-                  <div className="cv-actions">
-                    <a
-                      className="cv-action cv-action--primary"
-                      href={cvPdf}
-                      download={cv.downloadName}
-                    >
-                      Download PDF <span aria-hidden="true">↓</span>
-                    </a>
-                    <a
-                      className="cv-action"
-                      href={cvPdf}
-                      target="_blank"
-                      rel="noreferrer"
-                    >
-                      Open in New Tab <span aria-hidden="true">↗</span>
-                    </a>
+            {selected === 'cv' ? (
+              <div className="cv-summary">
+                <div className="cv-summary-grid">
+                  <div className="cv-summary-block">
+                    <span className="cv-summary-label">EDUCATION</span>
+                    <span className="cv-summary-value">{CV_SUMMARY.education.degree}</span>
+                    <span className="cv-summary-sub">{CV_SUMMARY.education.institution}</span>
+                    <span className="cv-summary-sub">{CV_SUMMARY.education.period}</span>
+                  </div>
+
+                  <div className="cv-summary-block">
+                    <span className="cv-summary-label">CURRENT ROLE</span>
+                    <span className="cv-summary-value">{CV_SUMMARY.experience.role}</span>
+                    <span className="cv-summary-sub">{CV_SUMMARY.experience.company}</span>
+                    <span className="cv-summary-sub">{CV_SUMMARY.experience.period}</span>
+                  </div>
+
+                  <div className="cv-summary-block">
+                    <span className="cv-summary-label">CERTIFICATIONS</span>
+                    <span className="cv-summary-value">{CV_SUMMARY.certCount} credentials</span>
+                    <span className="cv-summary-sub">{CV_SUMMARY.issuers}</span>
+                  </div>
+
+                  <div className="cv-summary-block cv-summary-block--wide">
+                    <span className="cv-summary-label">CORE STACK</span>
+                    <div className="cv-summary-tags">
+                      {CV_SUMMARY.stack.map((tech) => (
+                        <span className="cv-summary-tag" key={tech}>
+                          {tech}
+                        </span>
+                      ))}
+                    </div>
                   </div>
                 </div>
-              ) : (
-                <>
-                  <ul className="about-portal-list">
-                    {selectedEntries.map((item) => (
-                      <li key={item.id ?? item.name} className="about-portal-item">
-                        <div className="about-portal-item-top">
-                          <span className="about-portal-item-main">
-                            {item[selectedCard.fields[0]]}
-                          </span>
-                          {item.period && (
-                            <span className="about-portal-item-badge">{item.period}</span>
-                          )}
-                        </div>
-                        {item.details?.length > 0 && (
-                          <span className="about-portal-item-detail">{item.details[0]}</span>
-                        )}
-                        <span className="about-portal-item-sub">
-                          {selectedCard.fields
-                            .slice(1)
-                            .map((f) => item[f])
-                            .filter(Boolean)
-                            .join(' · ')}
+
+                <p className="cv-summary-note">
+                  The PDF carries the full detail: every role, project and certification.
+                </p>
+
+                <div className="cv-actions">
+                  <a className="cv-action cv-action--primary" href={cvPdf} download={cv.downloadName}>
+                    Download PDF <span aria-hidden="true">↓</span>
+                  </a>
+                  <a className="cv-action" href={cvPdf} target="_blank" rel="noreferrer">
+                    Open in New Tab <span aria-hidden="true">↗</span>
+                  </a>
+                </div>
+              </div>
+            ) : (
+              <>
+                <ul className="about-portal-list">
+                  {selectedEntries.map((item) => (
+                    <li key={item.id ?? item.name} className="about-portal-item">
+                      <div className="about-portal-item-top">
+                        <span className="about-portal-item-main">
+                          {item[selectedCard.fields[0]]}
                         </span>
-                      </li>
-                    ))}
-                  </ul>
-                  <span className="about-portal-note">
-                    Verified Academic &amp; Professional Credentials
-                  </span>
-                </>
-              )}
+                        {item.period && (
+                          <span className="about-portal-item-badge">{item.period}</span>
+                        )}
+                      </div>
+                      {item.details?.length > 0 && (
+                        <span className="about-portal-item-detail">{item.details[0]}</span>
+                      )}
+                      <span className="about-portal-item-sub">
+                        {selectedCard.fields
+                          .slice(1)
+                          .map((f) => item[f])
+                          .filter(Boolean)
+                          .join(' · ')}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+                <span className="about-portal-note">Verified academic &amp; professional credentials</span>
+              </>
+            )}
           </>
         )}
       </SlingRingPortal>
