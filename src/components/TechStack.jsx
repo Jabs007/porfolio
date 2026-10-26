@@ -422,7 +422,7 @@ export default function TechStack() {
                       <a
                         key={repo}
                         className="ts-portal-repo-link"
-                        href={`https://github.com/adamsjabali/${repo}`}
+                        href={`https://github.com/Jabs007/${repo}`}
                         target="_blank"
                         rel="noopener noreferrer"
                       >
