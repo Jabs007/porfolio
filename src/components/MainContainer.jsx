@@ -59,52 +59,55 @@ export default function MainContainer() {
         });
       };
 
-      row.addEventListener('mousemove', onMove);
-      row.addEventListener('mouseleave', onLeave);
-      return () => {
-        row.removeEventListener('mousemove', onMove);
-        row.removeEventListener('mouseleave', onLeave);
+      // Press feedback lives here too: CSS :active can't scale the buttons
+      // because quickTo writes transform inline, so GSAP owns the press.
+      // Overwrite 'auto' only kills conflicting (scale) tweens, not the
+      // magnetic x/y quickTos.
+      const onDown = (e) => {
+        const btn = e.target.closest('.btn');
+        if (!btn) return;
+        gsap.to(btn, { scale: 0.94, duration: 0.12, ease: 'power2.out', overwrite: 'auto' });
       };
-    },
-    { scope: mainRef }
-  );
-
-  // Kinetic cursor-tracked metallic bronze shimmer on title
-  useGSAP(
-    () => {
-      const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-      if (reduceMotion) return;
-      const titleEl = titleRef.current;
-      if (!titleEl) return;
-
-      const lines = titleEl.querySelectorAll('.title-line');
-
-      const onTitleMove = (e) => {
-        const rect = titleEl.getBoundingClientRect();
-        const px = ((e.clientX - rect.left) / rect.width) * 100;
-        const py = ((e.clientY - rect.top) / rect.height) * 100;
-
-        lines.forEach((line) => {
-          line.style.setProperty('--sheen-x', `${px}%`);
-          line.style.setProperty('--sheen-y', `${py}%`);
+      const onUp = () => {
+        row.querySelectorAll('.btn').forEach((btn) => {
+          gsap.to(btn, { scale: 1, duration: 0.25, ease: 'back.out(2.5)', overwrite: 'auto' });
         });
       };
 
-      titleEl.addEventListener('mousemove', onTitleMove);
+      row.addEventListener('mousemove', onMove);
+      row.addEventListener('mouseleave', onLeave);
+      row.addEventListener('pointerdown', onDown);
+      window.addEventListener('pointerup', onUp);
       return () => {
-        titleEl.removeEventListener('mousemove', onTitleMove);
+        row.removeEventListener('mousemove', onMove);
+        row.removeEventListener('mouseleave', onLeave);
+        row.removeEventListener('pointerdown', onDown);
+        window.removeEventListener('pointerup', onUp);
       };
     },
     { scope: mainRef }
   );
 
   const initAnimations = () => {
+    // Reduced-motion: elements are hidden in their pre-entrance state, so pin
+    // them to their resting values and skip the whole timeline.
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (reduceMotion) {
+      gsap.set('.split-h2 span', { y: '0%', rotation: 0 });
+      gsap.set('.hero-para', { opacity: 0.85, y: 0 });
+      gsap.set('.hero-visual', { opacity: 1, scale: 1 });
+      return;
+    }
+
+    // One coordinated beat (~1.3s total): the headline mask-slide is the
+    // signature move; badge/para/CTAs/visual ride the same pass instead of
+    // three separately-staggered rituals.
     const tl = gsap.timeline();
 
     tl.fromTo(
       '.hero-badge',
-      { opacity: 0, y: -16 },
-      { opacity: 1, y: 0, duration: 0.6, ease: 'power3.out' }
+      { opacity: 0, y: -12 },
+      { opacity: 1, y: 0, duration: 0.45, ease: 'power3.out' }
     );
 
     tl.fromTo(
@@ -113,44 +116,58 @@ export default function MainContainer() {
       {
         y: '0%',
         rotation: 0,
-        duration: 1.1,
-        stagger: 0.08,
+        duration: 0.85,
+        stagger: 0.07,
         ease: 'power4.out',
       },
-      '-=0.35'
+      0.15
     );
 
     tl.fromTo(
       '.hero-para',
-      { opacity: 0, y: 24 },
-      { opacity: 0.85, y: 0, duration: 0.7, ease: 'power3.out' },
-      '-=0.5'
+      { opacity: 0, y: 18 },
+      { opacity: 0.85, y: 0, duration: 0.5, ease: 'power3.out' },
+      0.5
     );
 
     tl.fromTo(
       '.hero-cta .btn',
-      { opacity: 0, y: 20 },
-      { opacity: 1, y: 0, duration: 0.6, stagger: 0.1, ease: 'power3.out' },
-      '-=0.4'
+      { opacity: 0, y: 18 },
+      { opacity: 1, y: 0, duration: 0.5, stagger: 0.06, ease: 'power3.out' },
+      0.62
     );
 
     tl.fromTo(
       '.hero-visual',
-      { opacity: 0, scale: 0.94 },
-      { opacity: 1, scale: 1, duration: 1, ease: 'power3.out' },
-      '-=0.6'
+      { opacity: 0, scale: 0.96 },
+      { opacity: 1, scale: 1, duration: 0.8, ease: 'power3.out' },
+      0.35
+    );
+
+    // One-time light pass on the accent word (repeats + yoyo returns it to
+    // rest). The only headline motion — read-only type gets no hover choreography.
+    tl.fromTo(
+      '.title-line-accent',
+      { backgroundPosition: '0% 0%' },
+      {
+        backgroundPosition: '55% 0%',
+        duration: 0.5,
+        ease: 'power2.inOut',
+        yoyo: true,
+        repeat: 1,
+      },
+      0.75
     );
 
     tl.fromTo(
       '.scroll-cue',
       { opacity: 0 },
-      { opacity: 0.7, duration: 0.8, ease: 'power2.out' },
-      '-=0.4'
+      { opacity: 0.6, duration: 0.4, ease: 'power2.out' },
+      0.9
     );
 
     // Clean exit parallax on scroll (no blur)
-    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if (!reduceMotion && mainRef.current) {
+    if (mainRef.current) {
       gsap.to('.hero-text', {
         y: -40,
         opacity: 0.2,
@@ -233,8 +250,8 @@ export default function MainContainer() {
       </div>
 
       <a href="#about" className="scroll-cue" aria-label="Scroll down to see more">
-        <span className="scroll-cue-mouse" aria-hidden="true">
-          <span className="scroll-cue-dot" />
+        <span className="scroll-cue-line" aria-hidden="true">
+          <span className="scroll-cue-dash" />
         </span>
         <span className="scroll-cue-text">SCROLL</span>
       </a>

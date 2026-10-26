@@ -1,13 +1,12 @@
 export const hero = {
   name: 'Adams Jabali',
   title: ['CREATIVE', 'DEVELOPER', '& DATA SCIENTIST'],
-  // 3D character stage (React Three Fiber). Leave `enabled: false` to keep
-  // the site purely 2D; drop a GLB in /public, set enabled + modelUrl and the
-  // scroll choreography in useCharacterScroll drives it through the rig
-  // (position / rotation / scale / camera / animation mixer time).
+  // 3D character stage (React Three Fiber). The hologram is a shader-displaced
+  // bust built from /hero-character.webp + /hero-depth.png — there is no GLB
+  // rig anywhere in the code. The ~886 kB three.js chunk is lazy-loaded
+  // inside HeroThree only when this is true; false renders the 2D fallback.
   character3d: {
-    enabled: false,
-    modelUrl: '/character.glb',
+    enabled: true,
   },
   tagline:
     "I'm Adams Jabali, a Software Engineer & Data Scientist specializing in ML Engineering, scalable backend systems, and intelligent applications.",
