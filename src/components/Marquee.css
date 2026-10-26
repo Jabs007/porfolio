@@ -16,7 +16,7 @@
   background: linear-gradient(
     90deg,
     transparent,
-    rgba(194, 164, 255, 0.25),
+    rgba(139, 90, 43, 0.32),
     transparent
   );
 }
@@ -29,15 +29,12 @@
   bottom: 0;
 }
 
+/* The drift itself is driven by GSAP in Marquee.jsx (transform only).
+   No will-change: the track is ~7700px wide, so layer promotion would
+   reserve a huge composited surface for a decoration. */
 .marquee-track {
   display: flex;
   width: max-content;
-  animation: marquee-scroll 32s linear infinite;
-  will-change: transform;
-}
-
-.marquee--reverse .marquee-track {
-  animation-direction: reverse;
 }
 
 .marquee-group {
@@ -57,14 +54,6 @@
   color: transparent;
   -webkit-text-stroke: 1.5px rgba(139, 90, 43, 0.35);
   padding: 0 32px;
-  transition: color 0.4s ease, -webkit-text-stroke 0.4s ease, filter 0.4s ease;
-  cursor: default;
-}
-
-.marquee-item:hover {
-  color: var(--textColor);
-  -webkit-text-stroke: 0;
-  filter: drop-shadow(0 6px 20px rgba(139, 90, 43, 0.25));
 }
 
 .marquee-sep {
@@ -74,21 +63,6 @@
   margin-left: 32px;
   -webkit-text-stroke: 0;
   opacity: 0.85;
-}
-
-@keyframes marquee-scroll {
-  from {
-    transform: translateX(0);
-  }
-  to {
-    transform: translateX(-50%);
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .marquee-track {
-    animation: none;
-  }
 }
 
 @media (max-width: 600px) {
