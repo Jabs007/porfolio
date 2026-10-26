@@ -1,151 +1,143 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
+import { contact, projects, socials } from '../data/content.js';
 import './Footer.css';
 
+const NAME = 'Adams Jabali Momanyi';
+const ROLE = 'Software Engineer & Data Scientist';
+
+const SECTIONS = [
+  { id: 'about', num: '01', label: 'About & CV' },
+  { id: 'projects', num: '02', label: 'Selected Work' },
+  { id: 'techstack', num: '03', label: 'Tech Stack' },
+  { id: 'experience', num: '04', label: 'Experience' },
+  { id: 'contact', num: '05', label: 'Contact' },
+];
+
+// Featured repositories, with URLs taken from the project data rather than
+// repeated here. Labels stay short so the column reads as an index.
+const FEATURED = [
+  { id: 1, label: 'B2C Segmentation Platform' },
+  { id: 5, label: 'Credit Risk ML Predictor' },
+  { id: 2, label: 'KUCCPS Placement BI' },
+  { id: 6, label: 'CF Recommender Lab' },
+].map(({ id, label }) => {
+  const project = projects.find((p) => p.id === id);
+  return { label, href: project.github };
+});
+
+// +254740470067 -> +254 740 470 067 for display; the tel: link keeps the raw form.
+const phoneDisplay = contact.phoneIntl.replace(/^(\+254)(\d{3})(\d{3})(\d{3})$/, '$1 $2 $3 $4');
+
+const CHANNELS = [
+  { label: contact.email, href: `mailto:${contact.email}` },
+  { label: phoneDisplay, href: `tel:${contact.phoneIntl}` },
+  { label: 'LinkedIn', href: socials.linkedin },
+  { label: 'GitHub', href: socials.github },
+];
+
+const CLOCK = new Intl.DateTimeFormat('en-GB', {
+  timeZone: 'Africa/Nairobi',
+  hour: '2-digit',
+  minute: '2-digit',
+  second: '2-digit',
+  hour12: false,
+});
+
 export default function MainFooter() {
-  const [time, setTime] = useState('');
+  const [time, setTime] = useState(() => CLOCK.format(new Date()));
 
-  // Nairobi Time (EAT, UTC+3)
   useEffect(() => {
-    const updateTime = () => {
-      const options = {
-        timeZone: 'Africa/Nairobi',
-        hour: '2-digit',
-        minute: '2-digit',
-        second: '2-digit',
-        hour12: true,
-      };
-      setTime(new Intl.DateTimeFormat('en-US', options).format(new Date()));
-    };
-
-    updateTime();
-    const interval = setInterval(updateTime, 1000);
+    const interval = setInterval(() => setTime(CLOCK.format(new Date())), 1000);
     return () => clearInterval(interval);
   }, []);
 
-  const scrollToTop = () => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
-
   return (
-    <footer className="footer" role="contentinfo">
-      {/* Mystic top border glow */}
-      <div className="footer-top-glow" aria-hidden="true" />
+    <footer className="ft">
+      <div className="section-container">
+        <div className="ft-top">
+          <div className="ft-identity">
+            <h2 className="ft-name">{NAME}</h2>
+            <p className="ft-role">{ROLE}</p>
+          </div>
 
-      <div className="footer-content section-container">
-        {/* Giant footer statement */}
-        <div className="footer-hero" data-reveal="up">
-          <span className="footer-kicker">DIMENSIONAL SANCTUM</span>
-          <h2 className="footer-big-title">
-            LET'S CONJURE SOMETHING <span className="footer-title-accent">EXTRAORDINARY</span>
-          </h2>
-          <p className="footer-quote">
-            "The language of the mystic arts is as old as the world itself, in software every function is an incantation."
-          </p>
-        </div>
-
-        {/* Multi-column navigation and info grid */}
-        <div className="footer-grid" data-reveal="up" data-reveal-delay="0.12">
-          {/* Col 1: Identity & Status */}
-          <div className="footer-col footer-col--brand">
-            <div className="footer-logo">adams.dev</div>
-            <p className="footer-bio">
-              Software Engineer & Data Scientist specializing in ML engineering, scalable distributed architectures, and interactive digital experiences.
+          <div className="ft-status">
+            <p className="ft-availability">
+              <span className="ft-dot" aria-hidden="true" />
+              {contact.availability}
             </p>
-            <div className="footer-status-pill">
-              <span className="footer-status-dot" aria-hidden="true" />
-              <span>Available for Hire & Internships</span>
-            </div>
-            <div className="footer-time-pill">
-              <span className="footer-time-glyph" aria-hidden="true">⏱</span>
-              <span>Nairobi (EAT): <strong>{time || '12:00:00 PM'}</strong></span>
-            </div>
+            <p className="ft-clock">
+              Nairobi (EAT) · <span className="ft-clock-value">{time}</span>
+            </p>
           </div>
+        </div>
 
-          {/* Col 2: Dimensional Sections */}
-          <div className="footer-col">
-            <h5 className="footer-col-title">SECTIONS</h5>
-            <ul className="footer-nav-list">
-              <li><a href="#about" className="footer-nav-link">01 / About & CV</a></li>
-              <li><a href="#projects" className="footer-nav-link">02 / Selected Work</a></li>
-              <li><a href="#techstack" className="footer-nav-link">03 / Tech Stack</a></li>
-              <li><a href="#experience" className="footer-nav-link">04 / Experience</a></li>
-              <li><a href="#contact" className="footer-nav-link">05 / Contact & Direct Mail</a></li>
+        <div className="ft-grid">
+          <nav className="ft-col" aria-label="Footer sections">
+            <h3 className="ft-col-title">Sections</h3>
+            <ul className="ft-list">
+              {SECTIONS.map((section) => (
+                <li key={section.id}>
+                  <a className="ft-link" href={`#${section.id}`}>
+                    <span className="ft-num">{section.num}</span>
+                    {section.label}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </nav>
+
+          <div className="ft-col">
+            <h3 className="ft-col-title">Featured repos</h3>
+            <ul className="ft-list">
+              {FEATURED.map((repo) => (
+                <li key={repo.href}>
+                  <a className="ft-link" href={repo.href} target="_blank" rel="noopener noreferrer">
+                    {repo.label}
+                    <span className="ft-arrow" aria-hidden="true">
+                      ↗
+                    </span>
+                  </a>
+                </li>
+              ))}
             </ul>
           </div>
 
-          {/* Col 3: Key Repositories */}
-          <div className="footer-col">
-            <h5 className="footer-col-title">FEATURED REPOS</h5>
-            <ul className="footer-nav-list">
-              <li>
-                <a href="https://github.com/Jabs007/B2C-SEGEMENTATION" target="_blank" rel="noopener noreferrer" className="footer-nav-link">
-                  B2C Segmentation Platform <span aria-hidden="true">↗</span>
-                </a>
-              </li>
-              <li>
-                <a href="https://github.com/Jabs007/loan-default-prediction" target="_blank" rel="noopener noreferrer" className="footer-nav-link">
-                  Credit Risk ML Predictor <span aria-hidden="true">↗</span>
-                </a>
-              </li>
-              <li>
-                <a href="https://github.com/Jabs007/dashboard" target="_blank" rel="noopener noreferrer" className="footer-nav-link">
-                  KUCCPS Placement BI <span aria-hidden="true">↗</span>
-                </a>
-              </li>
-              <li>
-                <a href="https://github.com/Jabs007/group-4" target="_blank" rel="noopener noreferrer" className="footer-nav-link">
-                  CF Recommender Lab <span aria-hidden="true">↗</span>
-                </a>
-              </li>
-            </ul>
-          </div>
-
-          {/* Col 4: Connect Channels */}
-          <div className="footer-col">
-            <h5 className="footer-col-title">DIRECT CHANNELS</h5>
-            <ul className="footer-nav-list">
-              <li>
-                <a href="mailto:adamsjabali9@gmail.com" className="footer-nav-link">
-                  adamsjabali9@gmail.com <span aria-hidden="true">↗</span>
-                </a>
-              </li>
-              <li>
-                <a href="tel:+254740470067" className="footer-nav-link">
-                  +254 740 470 067 <span aria-hidden="true">↗</span>
-                </a>
-              </li>
-              <li>
-                <a href="https://linkedin.com/in/adams-jabali-880377371" target="_blank" rel="noopener noreferrer" className="footer-nav-link">
-                  LinkedIn Profile <span aria-hidden="true">↗</span>
-                </a>
-              </li>
-              <li>
-                <a href="https://github.com/Jabs007" target="_blank" rel="noopener noreferrer" className="footer-nav-link">
-                  GitHub Profile <span aria-hidden="true">↗</span>
-                </a>
-              </li>
+          <div className="ft-col">
+            <h3 className="ft-col-title">Direct channels</h3>
+            <ul className="ft-list">
+              {CHANNELS.map((channel) => (
+                <li key={channel.label}>
+                  <a
+                    className="ft-link"
+                    href={channel.href}
+                    {...(channel.href.startsWith('http')
+                      ? { target: '_blank', rel: 'noopener noreferrer' }
+                      : {})}
+                  >
+                    {channel.label}
+                    {channel.href.startsWith('http') && (
+                      <span className="ft-arrow" aria-hidden="true">
+                        ↗
+                      </span>
+                    )}
+                  </a>
+                </li>
+              ))}
             </ul>
           </div>
         </div>
 
-        {/* Bottom Bar with Back to top */}
-        <div className="footer-bottom" data-reveal="up" data-reveal-delay="0.18">
-          <div className="footer-copyright">
-            <span>© {new Date().getFullYear()} Adams Jabali Momanyi.</span>
-            <span className="footer-built-with">
-              Crafted with <strong>React 19</strong>, <strong>GSAP</strong>, <strong>Three.js</strong> & <strong>Lenis</strong>.
-            </span>
-          </div>
-
-          <button
-            type="button"
-            className="footer-back-to-top"
-            onClick={scrollToTop}
-            aria-label="Return to the beginning of the timeline"
-          >
-            <span>ASCEND TO APEX</span>
-            <span className="footer-back-to-top-arrow" aria-hidden="true">↑</span>
-          </button>
+        <div className="ft-bottom">
+          <p className="ft-fine">
+            © {new Date().getFullYear()} {NAME}
+          </p>
+          <p className="ft-fine">
+            Built with React 19, GSAP, Three.js &amp; Lenis
+          </p>
+          <a className="ft-top-link" href="#hero">
+            Back to top
+            <span aria-hidden="true">↑</span>
+          </a>
         </div>
       </div>
     </footer>
