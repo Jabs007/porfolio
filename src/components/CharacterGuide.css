@@ -124,20 +124,13 @@
   top: -20px;
 }
 
-.contact-character-guide {
-  position: absolute;
-  right: 20px;
-  top: 30px;
-}
-
 /* Responsive adjustments */
 @media (max-width: 1024px) {
   .character-guide--md .character-guide-img {
     width: 180px;
   }
   .about-character-guide,
-  .projects-character-guide,
-  .contact-character-guide {
+  .projects-character-guide {
     position: relative;
     right: auto;
     top: auto;

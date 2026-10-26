@@ -41,7 +41,7 @@ export default function CustomCursor() {
 
     // Dynamic hover inspection on clickable / interactive targets
     const onMouseOver = (e) => {
-      const target = e.target.closest('a, button, input, textarea, select, [role="button"], .project-card, .ts-orb, .contact-card');
+      const target = e.target.closest('a, button, input, textarea, select, [role="button"], .project-card, .ts-orb');
       if (target) {
         setHovered(true);
         if (target.classList.contains('project-card')) {

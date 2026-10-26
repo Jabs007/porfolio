@@ -338,7 +338,6 @@ body[data-theme='dark'] {
 /* Convenience classes that each section can use out‑of‑the‑box */
 .about-orbs   { --orb-1-top: -120px; --orb-1-left: -120px; --orb-2-bottom: -60px; --orb-2-right: -60px; --orb-3-horiz: -50%; --orb-3-vert: -50px; }
 .projects-orbs { --orb-1-top: -80px; --orb-1-left: -80px; --orb-2-bottom: -40px; --orb-2-right: -40px; --orb-3-horiz: -40%; --orb-3-vert: -40px; }
-.contact-orbs  { --orb-1-top: -100px; --orb-1-left: -100px; --orb-2-bottom: -50px; --orb-2-right: -50px; --orb-3-horiz: -50%; --orb-3-vert: -50px; }
 
 @keyframes glass-orbit {
   0%,
