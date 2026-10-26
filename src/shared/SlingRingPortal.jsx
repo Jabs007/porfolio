@@ -20,7 +20,9 @@ import { prefersReducedMotion } from '../utils/motion.js';
  *   ariaLabel     accessible label for the dialog
  *   onClose       called when the backdrop is clicked
  *   cardRef       external ref to the card element (used by useFocusTrap in the section)
- *   burstPosRef   external ref holding {x, y} burst coordinates in section space
+ *   burstPosRef   external ref holding {x, y} burst coordinates in viewport space
+ *                 (the portal overlay is position:fixed, so the burst span's
+ *                 containing block is the viewport, not the section)
  *   animateChildren  when true, staggers the direct card children on open
  */
 export default function SlingRingPortal({

@@ -103,10 +103,11 @@ export default function Projects() {
       const next = selected === id ? null : id;
       if (next != null && e?.currentTarget) {
         const r = e.currentTarget.getBoundingClientRect();
-        const s = sectionRef.current.getBoundingClientRect();
+        // Viewport coordinates: the burst lives inside the fixed portal
+        // overlay (SlingRingPortal), so its containing block is the viewport.
         burstPosRef.current = {
-          x: r.left + r.width / 2 - s.left,
-          y: r.top + r.height / 2 - s.top,
+          x: r.left + r.width / 2,
+          y: r.top + r.height / 2,
         };
       }
       setSelected(next);

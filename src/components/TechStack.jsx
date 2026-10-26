@@ -102,10 +102,11 @@ export default function TechStack() {
       const next = selected === name ? null : name;
       if (next !== null && e?.currentTarget) {
         const r = e.currentTarget.getBoundingClientRect();
-        const s = sectionRef.current.getBoundingClientRect();
+        // Viewport coordinates: the burst lives inside the fixed portal
+        // overlay (SlingRingPortal), so its containing block is the viewport.
         burstPosRef.current = {
-          x: r.left + r.width / 2 - s.left,
-          y: r.top + r.height / 2 - s.top,
+          x: r.left + r.width / 2,
+          y: r.top + r.height / 2,
         };
       }
       setSelected(next);
@@ -252,9 +253,6 @@ export default function TechStack() {
           ))}
         </div>
       </div>
-
-      {/* Sling-ring burst flare */}
-      <span className="ts-burst" ref={burstRef} aria-hidden="true" />
 
       {/* Dr. Strange portal - shared component; accent from the tech's color. */}
       <SlingRingPortal
