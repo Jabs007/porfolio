@@ -1,3 +1,11 @@
+/* Portals render on a near-black card in both themes, so their chrome uses
+   the bright bronze rather than the theme accent (which is dark in light mode). */
+.about-portal,
+.project-portal,
+.ts-portal {
+  --portal-accent: var(--portalAccent);
+}
+
 /* ═══════════════════════════════════════════════════════════════════════════
    SlingRingPortal chrome
    The fire halo, arc rings and portal rings are CSS animations. Without this

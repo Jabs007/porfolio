@@ -1,11 +1,10 @@
 /* ============================================================================
    CINEMATIC SCROLL LAYER (global)
    Fixed atmospheric layers driven by useCinematicScroll:
-     .cinema-glow     ambient purple gradient that drifts with scroll velocity
-                      and parallax; subtle per-section color shift via
-                      body[data-scene] tints on the body background.
-     .cinema-wipes    one fixed gradient band per section boundary; scrubbed
-                      across the screen as the user crosses it (gradient wipe).
+     .cinema-glow     warm bronze gradient that drifts with scroll velocity
+                      and parallax.
+     .cinema-wipe     one fixed gradient band per section boundary; scrubbed
+                      across the screen as the user crosses it.
      .cinema-seam     filmic horizontal light cut that streaks across the
                       screen as a new section arrives.
      .cinema-particles
@@ -18,33 +17,6 @@
 :root {
   --vel: 0;        /* |scroll velocity| smoothed, 0..1 */
   --vel-signed: 0; /* signed scroll velocity, -1..1 (down = positive) */
-  --scene-hue: 0deg; /* per-scene hue rotation for the ambient glow */
-}
-
-/* --- Scene color shift: per-section body tints (cinematic travel) -------- */
-body {
-  transition: background-color 1.4s var(--ease-in-out);
-}
-/* Light theme: subtle per-section tints (near-white) so the white
-   background from index.css stays visible while preserving the
-   cinematic "travel" color shift. */
-body[data-scene='hero'] {
-  background-color: #fff8f0;
-}
-body[data-scene='techstack'] {
-  background-color: #f5f0e1;
-}
-body[data-scene='about'] {
-  background-color: #efe9e4;
-}
-body[data-scene='projects'] {
-  background-color: #e8e4dc;
-}
-body[data-scene='experience'] {
-  background-color: #e2dfd8;
-}
-body[data-scene='contact'] {
-  background-color: #fff8f0;
 }
 
 .cinema-layer {
@@ -55,7 +27,7 @@ body[data-scene='contact'] {
   overflow: hidden;
 }
 
-/* --- Ambient glow: warm brown gradient, slow mouse-parallax + velocity drift -- */
+/* --- Ambient glow: warm bronze gradient, slow mouse-parallax + velocity drift -- */
 .cinema-glow {
   position: absolute;
   top: -25%;
@@ -66,9 +38,7 @@ body[data-scene='contact'] {
     radial-gradient(44% 36% at 22% 18%, rgba(139, 90, 43, 0.1), transparent 70%),
     radial-gradient(38% 32% at 82% 76%, rgba(105, 73, 40, 0.08), transparent 70%),
     radial-gradient(32% 28% at 60% 40%, rgba(139, 90, 43, 0.05), transparent 70%);
-  filter: hue-rotate(var(--scene-hue, 0deg)) blur(2px);
-  will-change: transform, filter;
-  transition: filter 0.9s var(--ease-in-out);
+  will-change: transform;
 }
 
 /* --- Gradient wipe: one fixed strip per section boundary ----------------- */
@@ -128,8 +98,5 @@ body[data-scene='contact'] {
   .cinema-seam,
   .cinema-particles {
     display: none;
-  }
-  body {
-    transition: none;
   }
 }

@@ -20,56 +20,6 @@
   z-index: 1;
 }
 
-/* ---- Ambient orbs (drift + parallax, shared component) ---- */
-.about-orbs {
-  position: absolute;
-  inset: 0;
-  z-index: 0;
-  pointer-events: none;
-  overflow: hidden;
-}
-
-.about-orb {
-  position: absolute;
-  width: 480px;
-  height: 480px;
-}
-
-.about-orb--1 {
-  top: -140px;
-  left: -120px;
-}
-
-.about-orb--2 {
-  top: 28%;
-  right: -200px;
-}
-
-.about-orb--3 {
-  bottom: -180px;
-  left: 28%;
-}
-
-.about-orb-core {
-  position: absolute;
-  inset: 0;
-  border-radius: 50%;
-  background: radial-gradient(
-    circle,
-    color-mix(in srgb, var(--accentColor) 13%, transparent),
-    transparent 68%
-  );
-  filter: blur(48px);
-}
-
-.about-orb--2 .about-orb-core {
-  background: radial-gradient(circle, rgba(139, 90, 43, 0.12), transparent 68%);
-}
-
-.about-orb--3 .about-orb-core {
-  background: radial-gradient(circle, rgba(105, 73, 40, 0.11), transparent 68%);
-}
-
 /* ---- Layout ---- */
 .about-grid {
   display: grid;
@@ -117,12 +67,9 @@
   color: var(--textColor);
 }
 
-/* Static bronze treatment - no hover sheen, no filter transitions on type. */
+/* Accent word follows the theme accent - one bronze, both themes. */
 .about-accent {
-  background: linear-gradient(112deg, #8b5a2b 0%, #c8872a 40%, #e2a850 62%, #8b5a2b 100%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
+  color: var(--accentColor);
 }
 
 /* Portrait inset: floats beside the lead paragraph so the rail stays lean. */
@@ -244,7 +191,7 @@
 .about-row:hover .about-row-index,
 .about-row:focus-visible .about-row-index,
 .about-row--active .about-row-index {
-  color: var(--row-accent, var(--accentColor));
+  color: var(--accentColor);
 }
 
 .about-row-body {
@@ -343,170 +290,6 @@
    PORTAL - the Dr. Strange overlay (shared SlingRingPortal chrome).
    Deliberately dark in both themes: it is a separate space, not a surface.
    ═══════════════════════════════════════════════════════════════════════════ */
-.about-portal {
-  position: fixed;
-  inset: 0;
-  z-index: 100;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 20px;
-  visibility: hidden;
-  opacity: 0;
-  pointer-events: none;
-  will-change: transform, opacity;
-}
-
-.about-portal-backdrop {
-  position: absolute;
-  inset: 0;
-  border: 0;
-  padding: 0;
-  background: radial-gradient(circle at center, rgba(20, 12, 8, 0.75) 0%, rgba(10, 6, 4, 0.92) 100%);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  cursor: pointer;
-  pointer-events: auto;
-}
-
-.about-portal-burst {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 140px;
-  height: 140px;
-  margin: -70px 0 0 -70px;
-  border-radius: 50%;
-  border: 2px solid var(--portal-accent, #e2a850);
-  box-shadow:
-    0 0 45px color-mix(in srgb, var(--portal-accent, #e2a850) 75%, transparent),
-    inset 0 0 25px color-mix(in srgb, var(--portal-accent, #e2a850) 50%, transparent);
-  opacity: 0;
-  pointer-events: none;
-}
-
-.about-portal-rig {
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: min(660px, 94vw);
-  pointer-events: none;
-}
-
-.about-portal-fire {
-  position: absolute;
-  inset: -20px;
-  border-radius: 50%;
-  background: conic-gradient(
-    from 0deg,
-    color-mix(in srgb, var(--portal-accent, #e2a850) 65%, transparent),
-    color-mix(in srgb, var(--portal-accent, #e2a850) 25%, transparent),
-    color-mix(in srgb, var(--portal-accent, #e2a850) 85%, #ffffff 40%),
-    color-mix(in srgb, var(--portal-accent, #e2a850) 20%, transparent),
-    color-mix(in srgb, var(--portal-accent, #e2a850) 65%, transparent)
-  );
-  filter: blur(24px);
-  opacity: 0.85;
-  animation: about-portal-spin 8s linear infinite;
-}
-
-.about-portal-arcs {
-  position: absolute;
-  inset: -30px;
-  width: calc(100% + 60px);
-  height: calc(100% + 60px);
-  overflow: visible;
-}
-
-.about-portal-arc {
-  fill: none;
-  stroke: var(--portal-accent, #e2a850);
-  stroke-linecap: round;
-  stroke-width: 1.8;
-  stroke-dasharray: 0.34 0.66;
-  filter: drop-shadow(0 0 8px color-mix(in srgb, var(--portal-accent, #e2a850) 90%, transparent));
-  transform-box: fill-box;
-  transform-origin: center;
-  animation: about-portal-spin 4s linear infinite;
-}
-
-.about-portal-arc--2 {
-  stroke-width: 3.2;
-  stroke-dasharray: 0.2 0.8;
-  animation-direction: reverse;
-  animation-duration: 6s;
-  opacity: 0.8;
-}
-
-.about-portal-arc--3 {
-  stroke-width: 1.2;
-  stroke-dasharray: 0.28 0.72;
-  animation-duration: 7.5s;
-  opacity: 0.65;
-}
-
-.about-portal-ring {
-  position: absolute;
-  border-radius: 50%;
-  pointer-events: none;
-}
-
-.about-portal-ring--outer {
-  inset: -15px;
-  border: 1.5px solid var(--portal-accent, #e2a850);
-  box-shadow:
-    0 0 30px color-mix(in srgb, var(--portal-accent, #e2a850) 60%, transparent),
-    inset 0 0 30px color-mix(in srgb, var(--portal-accent, #e2a850) 35%, transparent);
-  animation: about-portal-pulse 2.5s ease-in-out infinite;
-}
-
-.about-portal-ring--inner {
-  inset: -5px;
-  border: 1px dashed color-mix(in srgb, var(--portal-accent, #e2a850) 70%, transparent);
-  animation: about-portal-spin 18s linear infinite reverse;
-}
-
-.about-portal-card {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  width: 100%;
-  max-width: 600px;
-  max-height: min(720px, 86vh);
-  padding: 32px 36px;
-  border-radius: 26px;
-  background: radial-gradient(circle at 50% 10%, rgba(32, 20, 14, 0.98), rgba(18, 11, 7, 0.99) 80%);
-  border: 1.5px solid color-mix(in srgb, var(--portal-accent, #e2a850) 55%, transparent);
-  box-shadow:
-    0 0 70px -10px color-mix(in srgb, var(--portal-accent, #e2a850) 55%, transparent),
-    0 25px 50px -12px rgba(0, 0, 0, 0.85);
-  overflow-y: auto;
-  text-align: left;
-  pointer-events: auto;
-  scrollbar-width: thin;
-  scrollbar-color: var(--portal-accent, #e2a850) transparent;
-}
-
-.about-portal-card--cv {
-  max-width: 680px;
-}
-
-/* One-pass shimmer on open - GSAP sweeps it once; it must be positioned. */
-.about-portal-shimmer {
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  background: linear-gradient(
-    105deg,
-    transparent 32%,
-    rgba(255, 255, 255, 0.14) 50%,
-    transparent 68%
-  );
-  pointer-events: none;
-}
-
 /* ---- Portal nav ---- */
 .about-portal-nav {
   display: flex;
@@ -546,9 +329,9 @@
 }
 
 .about-portal-tab-btn--active {
-  background: color-mix(in srgb, var(--portal-accent, #e2a850) 22%, transparent);
-  border-color: var(--portal-accent, #e2a850);
-  color: var(--portal-accent, #e2a850);
+  background: color-mix(in srgb, var(--portal-accent, var(--portalAccent)) 22%, transparent);
+  border-color: var(--portal-accent, var(--portalAccent));
+  color: var(--portal-accent, var(--portalAccent));
   font-weight: 700;
 }
 
@@ -559,9 +342,9 @@
   margin-left: auto;
   padding: 6px 14px;
   border-radius: 50px;
-  border: 1px solid color-mix(in srgb, var(--portal-accent, #e2a850) 45%, transparent);
-  background: color-mix(in srgb, var(--portal-accent, #e2a850) 10%, transparent);
-  color: var(--portal-accent, #e2a850);
+  border: 1px solid color-mix(in srgb, var(--portal-accent, var(--portalAccent)) 45%, transparent);
+  background: color-mix(in srgb, var(--portal-accent, var(--portalAccent)) 10%, transparent);
+  color: var(--portal-accent, var(--portalAccent));
   font-family: var(--font-mono);
   font-size: 11px;
   font-weight: 600;
@@ -571,10 +354,11 @@
 }
 
 .about-portal-close-pill:hover {
-  background: var(--portal-accent, #e2a850);
+  background: var(--portal-accent, var(--portalAccent));
   color: #1a1008;
 }
 
+/* ---- Portal header ---- */
 .about-portal-header {
   display: flex;
   flex-direction: column;
@@ -587,7 +371,7 @@
   font-weight: 600;
   letter-spacing: 0.24em;
   text-transform: uppercase;
-  color: var(--portal-accent, #e2a850);
+  color: var(--portal-accent, var(--portalAccent));
 }
 
 .about-portal-title {
@@ -623,7 +407,7 @@
 
 .about-portal-item:hover {
   background: rgba(255, 255, 255, 0.05);
-  border-color: color-mix(in srgb, var(--portal-accent, #e2a850) 30%, transparent);
+  border-color: color-mix(in srgb, var(--portal-accent, var(--portalAccent)) 30%, transparent);
 }
 
 .about-portal-item-top {
@@ -645,18 +429,18 @@
 .about-portal-item-badge {
   padding: 2px 8px;
   border-radius: 100px;
-  background: color-mix(in srgb, var(--portal-accent, #e2a850) 12%, transparent);
+  background: color-mix(in srgb, var(--portal-accent, var(--portalAccent)) 12%, transparent);
   font-family: var(--font-mono);
   font-size: 11px;
   font-weight: 600;
   letter-spacing: 0.08em;
-  color: var(--portal-accent, #e2a850);
+  color: var(--portal-accent, var(--portalAccent));
 }
 
 .about-portal-item-detail {
   font-size: 14px;
   line-height: 1.55;
-  color: color-mix(in srgb, var(--portal-accent, #e2a850) 78%, #ffffff);
+  color: color-mix(in srgb, var(--portal-accent, var(--portalAccent)) 78%, #ffffff);
 }
 
 .about-portal-item-sub {
@@ -709,7 +493,7 @@
   font-weight: 600;
   letter-spacing: 0.2em;
   text-transform: uppercase;
-  color: var(--portal-accent, #e2a850);
+  color: var(--portal-accent, var(--portalAccent));
 }
 
 .cv-summary-value {
@@ -762,9 +546,9 @@
   gap: 8px;
   padding: 11px 22px;
   border-radius: 999px;
-  border: 1px solid color-mix(in srgb, var(--portal-accent, #e2a850) 45%, transparent);
+  border: 1px solid color-mix(in srgb, var(--portal-accent, var(--portalAccent)) 45%, transparent);
   background: transparent;
-  color: var(--portal-accent, #e2a850);
+  color: var(--portal-accent, var(--portalAccent));
   font-family: var(--font-mono);
   font-size: 11px;
   font-weight: 600;
@@ -775,18 +559,18 @@
 
 .cv-action:hover,
 .cv-action:focus-visible {
-  background: color-mix(in srgb, var(--portal-accent, #e2a850) 16%, transparent);
+  background: color-mix(in srgb, var(--portal-accent, var(--portalAccent)) 16%, transparent);
 }
 
 .cv-action--primary {
-  background: var(--portal-accent, #e2a850);
+  background: var(--portal-accent, var(--portalAccent));
   border-color: transparent;
   color: #1a1008;
 }
 
 .cv-action--primary:hover,
 .cv-action--primary:focus-visible {
-  background: color-mix(in srgb, var(--portal-accent, #e2a850) 88%, #ffffff);
+  background: color-mix(in srgb, var(--portal-accent, var(--portalAccent)) 88%, #ffffff);
 }
 
 @keyframes about-portal-spin {
@@ -879,4 +663,154 @@
   .about-orb {
     opacity: 0.55;
   }
+}
+
+.about-portal-backdrop {
+  position: absolute;
+  inset: 0;
+  border: 0;
+  padding: 0;
+  background: radial-gradient(circle at center, rgba(20, 12, 8, 0.75) 0%, rgba(10, 6, 4, 0.92) 100%);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  cursor: pointer;
+  pointer-events: auto;
+}
+
+.about-portal-burst {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 140px;
+  height: 140px;
+  margin: -70px 0 0 -70px;
+  border-radius: 50%;
+  border: 2px solid var(--portal-accent, var(--portalAccent));
+  box-shadow:
+    0 0 45px color-mix(in srgb, var(--portal-accent, var(--portalAccent)) 75%, transparent),
+    inset 0 0 25px color-mix(in srgb, var(--portal-accent, var(--portalAccent)) 50%, transparent);
+  opacity: 0;
+  pointer-events: none;
+}
+
+.about-portal-rig {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: min(660px, 94vw);
+  pointer-events: none;
+}
+
+.about-portal-fire {
+  position: absolute;
+  inset: -20px;
+  border-radius: 50%;
+  background: conic-gradient(
+    from 0deg,
+    color-mix(in srgb, var(--portal-accent, var(--portalAccent)) 65%, transparent),
+    color-mix(in srgb, var(--portal-accent, var(--portalAccent)) 25%, transparent),
+    color-mix(in srgb, var(--portal-accent, var(--portalAccent)) 85%, #ffffff 40%),
+    color-mix(in srgb, var(--portal-accent, var(--portalAccent)) 20%, transparent),
+    color-mix(in srgb, var(--portal-accent, var(--portalAccent)) 65%, transparent)
+  );
+  filter: blur(24px);
+  opacity: 0.85;
+  animation: about-portal-spin 8s linear infinite;
+}
+
+.about-portal-arcs {
+  position: absolute;
+  inset: -30px;
+  width: calc(100% + 60px);
+  height: calc(100% + 60px);
+  overflow: visible;
+}
+
+.about-portal-arc {
+  fill: none;
+  stroke: var(--portal-accent, var(--portalAccent));
+  stroke-linecap: round;
+  stroke-width: 1.8;
+  stroke-dasharray: 0.34 0.66;
+  filter: drop-shadow(0 0 8px color-mix(in srgb, var(--portal-accent, var(--portalAccent)) 90%, transparent));
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: about-portal-spin 4s linear infinite;
+}
+
+.about-portal-arc--2 {
+  stroke-width: 3.2;
+  stroke-dasharray: 0.2 0.8;
+  animation-direction: reverse;
+  animation-duration: 6s;
+  opacity: 0.8;
+}
+
+.about-portal-arc--3 {
+  stroke-width: 1.2;
+  stroke-dasharray: 0.28 0.72;
+  animation-duration: 7.5s;
+  opacity: 0.65;
+}
+
+.about-portal-ring {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.about-portal-ring--outer {
+  inset: -15px;
+  border: 1.5px solid var(--portal-accent, var(--portalAccent));
+  box-shadow:
+    0 0 30px color-mix(in srgb, var(--portal-accent, var(--portalAccent)) 60%, transparent),
+    inset 0 0 30px color-mix(in srgb, var(--portal-accent, var(--portalAccent)) 35%, transparent);
+  animation: about-portal-pulse 2.5s ease-in-out infinite;
+}
+
+.about-portal-ring--inner {
+  inset: -5px;
+  border: 1px dashed color-mix(in srgb, var(--portal-accent, var(--portalAccent)) 70%, transparent);
+  animation: about-portal-spin 18s linear infinite reverse;
+}
+
+.about-portal-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 100%;
+  max-width: 600px;
+  max-height: min(720px, 86vh);
+  padding: 32px 36px;
+  border-radius: 26px;
+  background: radial-gradient(circle at 50% 10%, rgba(32, 20, 14, 0.98), rgba(18, 11, 7, 0.99) 80%);
+  border: 1.5px solid color-mix(in srgb, var(--portal-accent, var(--portalAccent)) 55%, transparent);
+  box-shadow:
+    0 0 70px -10px color-mix(in srgb, var(--portal-accent, var(--portalAccent)) 55%, transparent),
+    0 25px 50px -12px rgba(0, 0, 0, 0.85);
+  overflow-y: auto;
+  text-align: left;
+  pointer-events: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--portal-accent, var(--portalAccent)) transparent;
+}
+
+.about-portal-card--cv {
+  max-width: 680px;
+}
+
+/* One-pass shimmer on open - GSAP sweeps it once; it must be positioned. */
+.about-portal-shimmer {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(
+    105deg,
+    transparent 32%,
+    rgba(255, 255, 255, 0.14) 50%,
+    transparent 68%
+  );
+  pointer-events: none;
 }

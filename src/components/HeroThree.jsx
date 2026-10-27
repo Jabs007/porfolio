@@ -207,7 +207,7 @@ function HolographicBust({ mouse }) {
     uDisplacement: { value: 0.8 }, // True 3D depth extrusion
     uMouse: { value: new THREE.Vector2(0, 0) },
     uLightPos: { value: new THREE.Vector3(0, 1, 3.5) },
-    uLightColor: { value: new THREE.Color('#ffb45e') },
+    uLightColor: { value: new THREE.Color('#e2a850') },
     uLightIntensity: { value: 0.65 },
   }), [colorTexture, depthTexture]);
 

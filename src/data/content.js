@@ -155,7 +155,6 @@ export const aboutCards = [
     title: 'EDUCATION',
     index: '01',
     summary: 'BSc Data Science, Meru University of Science & Technology',
-    accent: '#e2a850',
     // Which keys of each education entry to render in the portal list.
     fields: ['degree', 'institution', 'period', 'location'],
   },
@@ -164,7 +163,6 @@ export const aboutCards = [
     title: 'EXPERIENCE',
     index: '02',
     summary: '2 internships at Statsspeak Group Ltd & KUCCPS',
-    accent: '#b87428',
     fields: ['role', 'company', 'period', 'location'],
   },
   {
@@ -172,7 +170,6 @@ export const aboutCards = [
     title: 'CERTIFICATIONS',
     index: '03',
     summary: '4 certifications: AWS, HackerRank, Coursera',
-    accent: '#ffb45e',
     fields: ['name', 'issuer', 'year'],
   },
 ];
@@ -186,7 +183,6 @@ export const cv = {
   index: '04',
   summary:
     'Education, current role, certifications and core stack, plus the full PDF.',
-  accent: '#d7c4a3',
   downloadName: 'Adams-Jabali-CV.pdf',
 };
 

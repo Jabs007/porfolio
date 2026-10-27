@@ -25,12 +25,9 @@
   color: var(--textColor);
 }
 
-/* Static bronze treatment - no hover sheen on read-only type. */
+/* Accent word follows the theme accent - one bronze, both themes. */
 .xp-accent {
-  background: linear-gradient(112deg, #8b5a2b 0%, #c8872a 40%, #e2a850 62%, #8b5a2b 100%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
+  color: var(--accentColor);
 }
 
 .xp-record {

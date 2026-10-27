@@ -28,7 +28,7 @@ const ENTRY_SETS = { education, experience, certifications };
 // The CV sits in the same numbered index as the three credential portals.
 const CV_ROW = { ...cv, id: 'cv' };
 const INDEX_ROWS = [...aboutCards, CV_ROW];
-const PORTAL_TABS = [...aboutCards, { id: 'cv', title: 'Curriculum Vitae', index: cv.index, accent: cv.accent }];
+const PORTAL_TABS = [...aboutCards, { id: 'cv', title: 'Curriculum Vitae', index: cv.index }];
 
 // Static CV summary - drawn from the same content data the sections use, so
 // the portal preview can never drift out of sync with the rest of the page.
@@ -173,7 +173,6 @@ export default function About() {
                     <button
                       type="button"
                       className={`about-row ${selected === row.id ? 'about-row--active' : ''}`}
-                      style={{ '--row-accent': row.accent }}
                       onClick={(e) => handleSelect(row.id, e)}
                       aria-expanded={selected === row.id}
                       aria-label={`${row.title}: ${row.summary} ${
@@ -218,7 +217,6 @@ export default function About() {
         baseClass="about-portal"
         cardClass={`about-portal-card ${selected === 'cv' ? 'about-portal-card--cv' : ''}`}
         open={selected}
-        accentColor={selectedCard ? selectedCard.accent : undefined}
         ariaLabel={selectedCard ? `${selectedCard.title} details` : 'About details'}
         onClose={closePortal}
         cardRef={portalCardRef}

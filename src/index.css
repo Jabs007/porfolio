@@ -11,6 +11,9 @@
   --font-accent: 'Space Grotesk', system-ui, -apple-system, sans-serif;
   --font-mono: 'JetBrains Mono', 'Fira Code', ui-monospace, monospace;
   --accentColor: #8b5a2b;
+  /* Portals are dark in both themes, so they use the bright bronze rather
+     than the theme accent (which is dark in light mode). */
+  --portalAccent: #e2a850;
   --backgroundColor: #fff8f0;
   --textColor: #242220;
   --vh: 100vh;
@@ -39,130 +42,18 @@
   --accentColor: #e2a850;
   --backgroundColor: #0c0a09;
   --textColor: #f3f1ee;
-  --textColorSecondary: #a8a29e;
-  --glass-bg: rgba(18, 14, 11, 0.6);
-  --glass-accent: #e2a850;
-  --glass-orbit-color: #9c6c28;
   color-scheme: dark;
-}
-
-/* transitions-dev - universal install block (paste once).
-   Every transition snippet reads from these semantic names. */
-:root {
-  /* Card resize */
-  --resize-dur: 300ms;
-  --resize-ease: cubic-bezier(0.22, 1, 0.36, 1);
-  /* Number pop-in */
-  --digit-dur: 500ms;
-  --digit-distance: 8px;
-  --digit-stagger: 70ms;
-  --digit-blur: 2px;
-  --digit-ease: cubic-bezier(0.34, 1.45, 0.64, 1);
-  --digit-dir-x: 0;
-  --digit-dir-y: 1;
-  /* Notification badge */
-  --badge-slide-dur: 260ms;
-  --badge-pop-dur: 500ms;
-  --badge-pop-close-dur: 180ms;
-  --badge-fade-dur: 400ms;
-  --badge-fade-close-dur: 180ms;
-  --badge-blur: 2px;
-  --badge-offset-x: -8.2px;
-  --badge-offset-y: 12.4px;
-  --badge-slide-ease: cubic-bezier(0.22, 1, 0.36, 1);
-  --badge-pop-ease: cubic-bezier(0.34, 1.36, 0.64, 1);
-  --badge-close-ease: cubic-bezier(0.4, 0, 0.2, 1);
-  /* Text states swap */
-  --text-swap-dur: 200ms;
-  --text-swap-translate-y: 8px;
-  --text-swap-blur: 2px;
-  --text-swap-ease: ease-out;
-  /* Menu dropdown */
-  --dropdown-open-dur: 250ms;
-  --dropdown-close-dur: 150ms;
-  --dropdown-pre-scale: 0.97;
-  --dropdown-closing-scale: 0.99;
-  --dropdown-ease: cubic-bezier(0.22, 1, 0.36, 1);
-  /* Modal open / close */
-  --modal-open-dur: 250ms;
-  --modal-close-dur: 150ms;
-  --modal-scale: 0.96;
-  --modal-scale-close: 0.96;
-  --modal-ease: cubic-bezier(0.22, 1, 0.36, 1);
-  /* Panel reveal */
-  --panel-open-dur: 400ms;
-  --panel-close-dur: 350ms;
-  --panel-translate-y: 100px;
-  --panel-blur: 2px;
-  --panel-ease: cubic-bezier(0.22, 1, 0.36, 1);
-  /* Page side-by-side */
-  --page-slide-dur: 200ms;
-  --page-fade-dur: 200ms;
-  --page-slide-distance: 8px;
-  --page-blur: 3px;
-  --page-stagger: 0ms;
-  --page-exit-enabled: 1;
-  --page-slide-ease: cubic-bezier(0.22, 1, 0.36, 1);
-  --page-fade-ease: cubic-bezier(0.22, 1, 0.36, 1);
-  /* Icon swap */
-  --icon-swap-dur: 200ms;
-  --icon-swap-blur: 2px;
-  --icon-swap-start-scale: 0.25;
-  --icon-swap-ease: ease-in-out;
-  /* Success check */
-  --check-opacity-dur: 550ms;
-  --check-rotate-dur: 550ms;
-  --check-rotate-from: 80deg;
-  --check-bob-dur: 450ms;
-  --check-y-amount: 40px;
-  --check-blur-dur: 500ms;
-  --check-blur-from: 10px;
-  --check-path-dur: 550ms;
-  --check-path-delay: 80ms;
-  --check-ease-out: cubic-bezier(0.22, 1, 0.36, 1);
-  --check-ease-opacity: cubic-bezier(0.22, 1, 0.36, 1);
-  --check-ease-rotate: cubic-bezier(0.22, 1, 0.36, 1);
-  --check-ease-bob: cubic-bezier(0.34, 1.35, 0.64, 1);
-  --check-ease-path: cubic-bezier(0.22, 1, 0.36, 1);
-
-  /* glassmorphism */
-  --glass-bg: rgba(255, 248, 240, 0.5);
-  --glass-blur: 20px;
-  --glass-accent: var(--accentColor);
-  --glass-orbs: rgba(139, 90, 43, 0.1), rgba(139, 90, 43, 0.08), rgba(139, 90, 43, 0.05);
-  --glass-orbit-color: #8b5a2b;
-
-  /* Avatar group hover */
-  --avatar-lift: -4px;
-  --avatar-dur: 320ms;
-  --avatar-scale: 1.05;
-  --avatar-falloff: 0.45;
-  --avatar-ease-in: cubic-bezier(0.22, 1, 0.36, 1);
-  --avatar-ease-out: cubic-bezier(0.34, 3.85, 0.64, 1);
-  /* Error state shake */
-  --shake-distance: 6px;
-  --shake-overshoot: 4px;
-  --shake-dur-a: 80ms;
-  --shake-dur-b: 60ms;
-  --shake-ease: cubic-bezier(0.22, 1, 0.36, 1);
-  --revert-hold: 3000ms;
-  --revert-dur: 280ms;
 }
 
 /* design-motion-principles - easing & duration tokens.
    Emil Kowalski: custom curves over built-in `ease` (easing is the most
    important part of any animation). Jakub Krehel: 200-500ms polish band.
    --ease-in-out     state changes while visible (hover, focus)
-   --ease-out-strong arrivals, lifts (hover float, reveals)
-   --ease-out-expo   fast, decisive arrivals (reserved for hero-scale entrances) */
+   --ease-out-strong arrivals, lifts (hover float, reveals) */
 :root {
   --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
   --ease-out-strong: cubic-bezier(0.22, 1, 0.36, 1);
-  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
-  --dur-micro: 150ms;
   --dur-fast: 220ms;
-  --dur-med: 300ms;
-  --dur-slow: 500ms;
 }
 
 @media screen and (min-width: 768px) {
@@ -230,123 +121,15 @@ body[data-theme='dark'] {
   color: var(--textColor);
 }
 
-/* --- dark glassmorphism backdrop layer ---
-   A subtle, layered frosted-glass effect created with multiple
-   absolutely-positioned blobs that sit behind all content. */
-.glassmorphism-layer {
+/* Page shell - keeps the fixed cinematic layer behind the content. */
+.site-shell {
   position: relative;
   z-index: 0;
 }
 
-.glassmorphism-orb {
-  position: absolute;
-  border-radius: 50%;
-  filter: blur(var(--glass-blur));
-  opacity: 0.6;
-  animation: glass-orbit 20s ease-in-out infinite;
-  will-change: transform, opacity;
-}
-
-.glassmorphism-orb--1 {
-  width: 400px;
-  height: 400px;
-  top: -100px;
-  left: -100px;
-  background: color-mix(in srgb, var(--glass-accent) 25%, transparent);
-}
-
-.glassmorphism-orb--2 {
-  width: 300px;
-  height: 300px;
-  bottom: -50px;
-  right: -50px;
-  background: color-mix(in srgb, var(--glass-orbit-color) 20%, transparent);
-}
-
-.glassmorphism-orb--3 {
-  width: 200px;
-  height: 200px;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  background: color-mix(in srgb, var(--glass-accent) 15%, transparent);
-}
-
-@keyframes glass-orbit {
-  0%,
-  100% {
-    transform: translate(0, 0) rotate(0deg);
-  }
-  50% {
-    transform: translate(80px, -60px) rotate(180deg);
-  }
-}
-
-/* main content sits above the layer */
 .main-body {
   position: relative;
   z-index: 1;
-}
-
-/* Optional: reduce glass motion for prefers-reduced-motion */
-@media (prefers-reduced-motion: reduce) {
-  .glassmorphism-orb {
-    animation: none;
-    opacity: 0.3;
-  }
-}
-
-/* Section-specific orb containers - each section can host its own orbiting
-   glassmorphism orbs that share the same accent and easing tokens. */
-.section-orbs {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  z-index: 1;
-}
-.section-orbs .orb {
-  position: absolute;
-  border-radius: 50%;
-  filter: blur(var(--glass-blur));
-  opacity: 0.6;
-  animation: glass-orbit 20s ease-in-out infinite;
-  will-change: transform, opacity;
-}
-.section-orbs .orb--1 {
-  top: var(--orb-1-top, -100px);
-  left: var(--orb-1-left, -100px);
-  width: 400px;
-  height: 400px;
-  background: color-mix(in srgb, var(--glass-accent) 25%, transparent);
-}
-.section-orbs .orb--2 {
-  bottom: var(--orb-2-bottom, -50px);
-  right: var(--orb-2-right, -50px);
-  width: 300px;
-  height: 300px;
-  background: color-mix(in srgb, var(--glass-orbit-color) 20%, transparent);
-}
-.section-orbs .orb--3 {
-  top: var(--orb-3-top, 50%);
-  left: var(--orb-3-left, 50%);
-  transform: translate(var(--orb-3-horiz, -50%), var(--orb-3-vert, -50%));
-  width: 200px;
-  height: 200px;
-  background: color-mix(in srgb, var(--glass-accent) 15%, transparent);
-}
-
-/* Convenience classes that each section can use out‑of‑the‑box */
-.about-orbs   { --orb-1-top: -120px; --orb-1-left: -120px; --orb-2-bottom: -60px; --orb-2-right: -60px; --orb-3-horiz: -50%; --orb-3-vert: -50px; }
-.projects-orbs { --orb-1-top: -80px; --orb-1-left: -80px; --orb-2-bottom: -40px; --orb-2-right: -40px; --orb-3-horiz: -40%; --orb-3-vert: -40px; }
-
-@keyframes glass-orbit {
-  0%,
-  100% {
-    transform: translate(0, 0) rotate(0deg);
-  }
-  50% {
-    transform: translate(80px, -60px) rotate(180deg);
-  }
 }
 
 h1,
@@ -389,7 +172,6 @@ a {
   }
 }
 
-.title,
 .para {
   font-kerning: none;
   -webkit-text-rendering: optimizeSpeed;

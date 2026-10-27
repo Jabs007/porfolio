@@ -34,7 +34,7 @@ function App() {
       )}
       {isLoadingComplete && (
         <>
-          <div className="glassmorphism-layer">
+          <div className="site-shell">
             <Navbar />
             <main>
               <MainContainer />

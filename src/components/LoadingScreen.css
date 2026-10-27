@@ -7,12 +7,12 @@
   inset: 0;
   width: 100vw;
   height: 100vh;
-  background: linear-gradient(135deg, #0a0710 0%, #050405 55%, #120a1c 100%);
+  background: linear-gradient(135deg, #171008 0%, #0c0a09 55%, #1a120a 100%);
   z-index: 999999999;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #eae5ec;
+  color: #f3f1ee;
   overflow: hidden;
   will-change: transform;
 }
@@ -21,7 +21,7 @@
   content: '';
   position: absolute;
   inset: 0;
-  background: linear-gradient(135deg, #eae5ec 0%, #d8d2df 50%, #eae5ec 100%);
+  background: linear-gradient(135deg, #fff8f0 0%, #f3ece2 50%, #fff8f0 100%);
   background-size: 200% 200%;
   animation: shimmer 3s ease-in-out infinite;
   transition: opacity 0.8s var(--ease-in-out);
@@ -34,7 +34,7 @@
   100% { background-position: 100% 100%; }
 }
 
-/* Welcome phase: light layer fades out, purple shapes sit on the dark base. */
+/* Welcome phase: light layer fades out, bronze shapes sit on the dark base. */
 .welcome-active::before {
   opacity: 0;
 }
@@ -56,7 +56,7 @@
 .shape-1 {
   width: 400px;
   height: 400px;
-  background: radial-gradient(circle, rgba(194, 164, 255, 0.5), transparent 70%);
+  background: radial-gradient(circle, rgba(200, 135, 42, 0.5), transparent 70%);
   top: -10%;
   right: -5%;
   animation: float 8s ease-in-out infinite;
@@ -65,7 +65,7 @@
 .shape-2 {
   width: 300px;
   height: 300px;
-  background: radial-gradient(circle, rgba(168, 124, 255, 0.4), transparent 70%);
+  background: radial-gradient(circle, rgba(139, 90, 43, 0.4), transparent 70%);
   bottom: -8%;
   left: -3%;
   animation: float 10s ease-in-out infinite reverse;
@@ -74,7 +74,7 @@
 .shape-3 {
   width: 200px;
   height: 200px;
-  background: radial-gradient(circle, rgba(155, 109, 255, 0.35), transparent 70%);
+  background: radial-gradient(circle, rgba(226, 168, 80, 0.35), transparent 70%);
   top: 40%;
   left: 20%;
   animation: float 7s ease-in-out infinite 1s;
@@ -83,7 +83,7 @@
 .shape-4 {
   width: 150px;
   height: 150px;
-  background: radial-gradient(circle, rgba(176, 125, 255, 0.4), transparent 70%);
+  background: radial-gradient(circle, rgba(180, 116, 40, 0.4), transparent 70%);
   top: 20%;
   right: 25%;
   animation: float 9s ease-in-out infinite 2s;
@@ -92,7 +92,7 @@
 .shape-5 {
   width: 250px;
   height: 250px;
-  background: radial-gradient(circle, rgba(194, 164, 255, 0.3), transparent 70%);
+  background: radial-gradient(circle, rgba(200, 135, 42, 0.3), transparent 70%);
   bottom: 20%;
   right: 15%;
   animation: float 11s ease-in-out infinite 1.5s;
@@ -134,12 +134,12 @@
   font-weight: 700;
   font-size: 14px;
   letter-spacing: 0.2px;
-  color: #050405;
+  color: #242220;
   transition: color 0.5s var(--ease-out-strong), opacity 0.4s var(--ease-in-out);
 }
 
 .welcome-active .loader-brand {
-  color: #eae5ec;
+  color: #f3f1ee;
 }
 
 .loader-decoration {
@@ -153,14 +153,14 @@
   display: inline-block;
   width: 3px;
   height: 16px;
-  background-color: #050405;
+  background-color: #242220;
   border-radius: 2px;
   opacity: 0.6;
   transition: background-color 0.5s var(--ease-out-strong);
 }
 
 .welcome-active .loader-decoration span {
-  background-color: #eae5ec;
+  background-color: #f3f1ee;
 }
 
 .loading-center {
@@ -173,19 +173,19 @@
 .loading-progress-track {
   width: 100%;
   height: 2px;
-  background: linear-gradient(90deg, rgba(5, 4, 5, 0.1), rgba(5, 4, 5, 0.2));
+  background: linear-gradient(90deg, rgba(36, 34, 32, 0.1), rgba(36, 34, 32, 0.2));
   border-radius: 100px;
   overflow: hidden;
   position: relative;
 }
 
 .welcome-active .loading-progress-track {
-  background: linear-gradient(90deg, rgba(234, 229, 236, 0.1), rgba(234, 229, 236, 0.2));
+  background: linear-gradient(90deg, rgba(243, 241, 238, 0.1), rgba(243, 241, 238, 0.2));
 }
 
 .loading-progress-fill {
   height: 100%;
-  background: linear-gradient(90deg, #050405, #a87cff);
+  background: linear-gradient(90deg, #242220, #c8872a);
   border-radius: 100px;
   transition: width 0.05s linear;
   position: relative;
@@ -248,7 +248,7 @@
   margin: 26px auto 0;
   background: linear-gradient(90deg, transparent, color-mix(in srgb, var(--accentColor) 50%, transparent), var(--accentColor), transparent);
   border-radius: 2px;
-  box-shadow: 0 0 18px rgba(168, 124, 255, 0.45);
+  box-shadow: 0 0 18px rgba(200, 135, 42, 0.45);
 }
 
 .welcome-subline {
@@ -257,7 +257,7 @@
   letter-spacing: 0.22em;
   text-transform: uppercase;
   font-weight: 500;
-  color: rgba(234, 229, 236, 0.75);
+  color: rgba(243, 241, 238, 0.75);
 }
 
 /* ---------- Reduced motion ---------- */

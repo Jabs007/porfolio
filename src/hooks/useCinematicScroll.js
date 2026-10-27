@@ -5,15 +5,14 @@ import '../cinematic.css';
 
 gsap.registerPlugin(ScrollTrigger);
 
-// Sections, in DOM order. Their boundaries get the gradient wipe treatment,
-// and each one paints a subtle body tint while active.
+// Sections, in DOM order. Their boundaries get the gradient wipe treatment.
 const SCENES = [
-  { id: 'hero',       scene: 'hero',       hue: 0   },
-  { id: 'about',      scene: 'about',      hue: 210 },
-  { id: 'projects',   scene: 'projects',   hue: 150 },
-  { id: 'techstack',  scene: 'techstack',  hue: 30  },
-  { id: 'experience', scene: 'experience', hue: 40  },
-  { id: 'contact',    scene: 'contact',    hue: 320 },
+  { id: 'hero' },
+  { id: 'about' },
+  { id: 'projects' },
+  { id: 'techstack' },
+  { id: 'experience' },
+  { id: 'contact' },
 ];
 
 const prefersReducedMotion = () =>
@@ -27,11 +26,10 @@ const prefersMobile = () =>
 /**
  * Global cinematic atmosphere:
  *  - scroll-velocity tracker writing --vel / --vel-signed CSS vars
- *  - ambient purple glow layer that drifts with velocity + mouse
+ *  - ambient bronze glow layer that drifts with velocity + mouse
  *  - gradient wipes at every section boundary (scrubbed)
  *  - a 2D particle field that drifts, reacts to velocity, and converges
  *    on the contact heading when that section is in view
- *  - per-section body color shift (extremely subtle)
  *
  * All effects respect prefers-reduced-motion; heavy layers are skipped on
  * mobile/coarse-pointer devices. Runs once `ready` (after the loading screen
@@ -141,37 +139,6 @@ export default function useCinematicScroll(ready) {
       cleans.push(() => t.kill());
     });
     cleans.push(() => seamTween.kill());
-
-    // ---- 3. Per-scene body tint + glow hue ----
-    const sceneTriggers = SCENES.map(({ id, scene, hue }) => {
-      const el = document.getElementById(id);
-      if (!el) return null;
-      return ScrollTrigger.create({
-        trigger: el,
-        start: 'top 55%',
-        end: 'bottom 45%',
-        onToggle: (self) => {
-          if (!self.isActive) return;
-          document.body.dataset.scene = scene;
-          document.documentElement.style.setProperty('--scene-hue', `${hue}deg`);
-        },
-        onLeaveBack: () => {
-          document.body.dataset.scene = scene;
-          document.documentElement.style.setProperty('--scene-hue', `${hue}deg`);
-        },
-      });
-    }).filter(Boolean);
-    // Set the initial scene + hue from the current scroll position.
-    const y = window.scrollY + window.innerHeight * 0.45;
-    let initialIdx = 0;
-    for (let i = 0; i < SCENES.length; i++) {
-      const el = document.getElementById(SCENES[i].id);
-      if (el && y >= el.offsetTop) initialIdx = i;
-    }
-    const initial = SCENES[initialIdx];
-    document.body.dataset.scene = initial.scene;
-    document.documentElement.style.setProperty('--scene-hue', `${initial.hue}deg`);
-    cleans.push(() => sceneTriggers.forEach((t) => t.kill()));
 
     // Mobile: keep the seam out of the DOM (real estate + perf)
     if (isMobile) seam.remove();
@@ -289,7 +256,7 @@ function initParticles(layer, cleans) {
       const flicker = 0.65 + 0.35 * Math.sin(p.tw);
       ctx.beginPath();
       ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-      ctx.fillStyle = `rgba(194, 164, 255, ${(p.a * flicker).toFixed(3)})`;
+      ctx.fillStyle = `rgba(200, 135, 42, ${(p.a * flicker).toFixed(3)})`;
       ctx.fill();
     }
   };
