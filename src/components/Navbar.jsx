@@ -140,15 +140,19 @@ export default function Navbar() {
 
   return (
     <div
-      ref={navRef}
       className={`loading-header ${isLoaded ? 'loaded' : ''} ${scrolled ? 'loading-header--scrolled' : ''} ${hidden ? 'loading-header--hidden' : ''}`}
     >
       <div className="scroll-progress" ref={progressRef} aria-hidden="true" />
       <a href="#" className="loader-title">adams.dev</a>
 
-      <nav className={`nav-link ${open ? 'nav-link--open' : ''}`}>
+      <nav
+        ref={navRef}
+        className={`nav-link ${open ? 'nav-link--open' : ''}`}
+        aria-label="Main navigation"
+      >
         <div className="nav-indicator" ref={indicatorRef} aria-hidden="true" />
-        {navLinks.map((link) => (
+        <div className="nav-mobile">
+          {navLinks.map((link) => (
           <a
             key={link.href}
             href={link.href}
@@ -159,6 +163,7 @@ export default function Navbar() {
             {link.label}
           </a>
         ))}
+        </div>
       </nav>
 
       <div className="nav-actions">
@@ -204,7 +209,20 @@ export default function Navbar() {
           <span />
           <span />
         </button>
+
+          <button
+            type="button"
+            className="nav-close"
+            onClick={() => setOpen(false)}
+            aria-label="Close navigation"
+          >
+            <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+              <line x1="3" y1="3" x2="17" y2="17" />
+              <line x1="3" y1="17" x2="17" y2="3" />
+            </svg>
+          </button>
       </div>
+      {open && <div className="nav-backdrop" onClick={() => setOpen(false)} aria-hidden="true" />}
     </div>
   );
 }
