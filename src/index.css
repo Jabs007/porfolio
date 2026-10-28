@@ -81,6 +81,17 @@ html.lenis {
   scroll-behavior: auto !important;
 }
 
+/* Offset fixed header for in-page anchors */
+main > section[id] {
+  scroll-margin-top: 96px;   /* desktop: header box ~88px */
+}
+
+@media (max-width: 768px) {
+  main > section[id] {
+    scroll-margin-top: 80px;  /* mobile: header box ~80px */
+  }
+}
+
 /* Prevent iframes from stealing pointer events during momentum phase. */
 html.lenis-ready .lenis-scrolling iframe {
   pointer-events: none;
